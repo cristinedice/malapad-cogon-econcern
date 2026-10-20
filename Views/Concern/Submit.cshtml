@@ -5,193 +5,213 @@
     var sitios = ViewBag.Sitios as List<MalapadCogonEConcern.Models.Entities.Sitio> ?? new();
 }
 
-<!-- Curved Blue Hero Header -->
-<div class="marikina-curved-hero">
-    <div class="container-fluid px-lg-5">
-        <div class="row align-items-center">
-            <div class="col-lg-3 col-md-4 d-none d-md-block"></div>
-            <div class="col-lg-9 col-md-8">
-                <h2 class="fw-bold text-white mb-1">e-Concern</h2>
-                <p class="text-white-50 fw-semibold mb-0" style="font-size: 1.05rem;">Form sa Pagsumite sang Reklamo</p>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="marikina-page-wrapper">
+    <!-- Top Blue Background Band -->
+    <div class="marikina-top-blue-band"></div>
 
-<div class="container-fluid px-lg-5 pb-5">
-    <div class="row">
-        <!-- Floating Left Sidebar Navigation Card -->
-        <div class="col-lg-3 col-md-4 sidebar-container">
-            <div class="marikina-sidebar">
-                <a asp-controller="Home" asp-action="Dashboard" class="sidebar-nav-item">
-                    <i class="bi bi-house-door-fill"></i>
-                    <span>Home</span>
-                </a>
-                <a asp-controller="Concern" asp-action="SelectCategory" class="sidebar-nav-item active">
-                    <i class="bi bi-send-fill"></i>
-                    <span>Submit Concern</span>
-                </a>
-                <a asp-controller="Concern" asp-action="MyConcerns" class="sidebar-nav-item">
-                    <i class="bi bi-chat-dots-fill"></i>
-                    <span>My Concern</span>
-                </a>
-                <a href="#" class="sidebar-nav-item" onclick="alert('Profile details'); return false;">
-                    <i class="bi bi-person-fill"></i>
-                    <span>Profile</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Right Content: Form Card -->
-        <div class="col-lg-9 col-md-8 pt-4">
-            <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 bg-white mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                    <div>
-                        <h4 class="fw-bold brand-blue-text mb-1">Detalye sang Concern</h4>
-                        <small class="text-muted">Barangay Malapad, Cogon, Sigma, Capiz</small>
-                    </div>
-                    <a asp-action="SelectCategory" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-left me-1"></i> Change Category
+    <div class="container-fluid px-lg-5 marikina-main-content">
+        <div class="row g-4">
+            <!-- LEFT: Floating Sidebar (Positioned at Top-Left!) -->
+            <div class="col-lg-3 col-md-4">
+                <div class="marikina-sidebar">
+                    <a asp-controller="Home" asp-action="Dashboard" class="sidebar-nav-item">
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Home</span>
                     </a>
+                    <a asp-controller="Concern" asp-action="SelectCategory" class="sidebar-nav-item active">
+                        <i class="bi bi-send-fill"></i>
+                        <span>Submit Concern</span>
+                    </a>
+                    <a asp-controller="Concern" asp-action="MyConcerns" class="sidebar-nav-item">
+                        <i class="bi bi-chat-dots-fill"></i>
+                        <span>My Concern</span>
+                    </a>
+                    <a asp-controller="Account" asp-action="Profile" class="sidebar-nav-item">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Profile</span>
+                    </a>
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                    {
+                        <hr class="border-light opacity-25 my-3">
+                        <small class="text-white-50 text-uppercase fw-bold px-3 d-block mb-2" style="font-size: 0.72rem;">Official Portal</small>
+                        <a asp-controller="Admin" asp-action="Index" class="sidebar-nav-item">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Admin Dashboard</span>
+                        </a>
+                        <a asp-controller="Reports" asp-action="Index" class="sidebar-nav-item">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span>Council Reports</span>
+                        </a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="Settings" asp-action="Index" class="sidebar-nav-item">
+                                <i class="bi bi-sliders"></i>
+                                <span>Settings</span>
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- RIGHT: Submit Concern Form -->
+            <div class="col-lg-9 col-md-8">
+                <!-- Header inside Blue Area -->
+                <div class="mb-3">
+                    <h2 class="fw-bold text-white mb-0">e-Concern</h2>
+                    <p class="text-white-50 fw-semibold mb-0" style="font-size: 1.05rem;">Form sa Pagsumite sang Reklamo</p>
                 </div>
 
-                <form asp-action="Submit" method="post" enctype="multipart/form-data" id="submitForm">
-                    @Html.AntiForgeryToken()
+                <!-- Form Card -->
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 bg-white mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                        <div>
+                            <h4 class="fw-bold brand-blue-text mb-1">Detalye sang Concern</h4>
+                            <small class="text-muted">Barangay Malapad, Cogon, Sigma, Capiz</small>
+                        </div>
+                        <a asp-action="SelectCategory" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-arrow-left me-1"></i> Change Category
+                        </a>
+                    </div>
 
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-4" role="alert"></div>
+                    <form asp-action="Submit" method="post" enctype="multipart/form-data" id="submitForm">
+                        @Html.AntiForgeryToken()
 
-                    <!-- Category & Sitio Selection -->
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="CategoryId" class="form-label fw-bold brand-blue-text small"></label>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-4" role="alert"></div>
+
+                        <!-- Category & Sitio Selection -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId" class="form-label fw-bold brand-blue-text small"></label>
+                                <span class="text-danger">*</span>
+                                <select asp-for="CategoryId" class="form-select" required>
+                                    <option value="">-- Pilia ang Kategorya --</option>
+                                    @foreach (var cat in categories)
+                                    {
+                                        <option value="@cat.Id">@cat.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="SitioId" class="form-label fw-bold brand-blue-text small"></label>
+                                <span class="text-danger">*</span>
+                                <select asp-for="SitioId" class="form-select" required>
+                                    <option value="">-- Pilia ang Purok o Sitio --</option>
+                                    @foreach (var s in sitios)
+                                    {
+                                        <option value="@s.Id">@s.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SitioId" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- Landmark / Location -->
+                        <div class="mb-3">
+                            <label asp-for="LandmarkOrAddress" class="form-label fw-bold brand-blue-text small"></label>
                             <span class="text-danger">*</span>
-                            <select asp-for="CategoryId" class="form-select" required>
-                                <option value="">-- Pilia ang Kategorya --</option>
-                                @foreach (var cat in categories)
-                                {
-                                    <option value="@cat.Id">@cat.Name</option>
-                                }
-                            </select>
-                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-primary"><i class="bi bi-geo-alt"></i></span>
+                                <input asp-for="LandmarkOrAddress" class="form-control" placeholder="Halimbawa: Malapit sa tulay sang Ilawod / Tinda ni Kap" required />
+                            </div>
+                            <span asp-validation-for="LandmarkOrAddress" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6">
-                            <label asp-for="SitioId" class="form-label fw-bold brand-blue-text small"></label>
+                        <!-- Concern Title -->
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-bold brand-blue-text small"></label>
                             <span class="text-danger">*</span>
-                            <select asp-for="SitioId" class="form-select" required>
-                                <option value="">-- Pilia ang Purok o Sitio --</option>
-                                @foreach (var s in sitios)
-                                {
-                                    <option value="@s.Id">@s.Name</option>
-                                }
-                            </select>
-                            <span asp-validation-for="SitioId" class="text-danger small"></span>
-                        </div>
-                    </div>
-
-                    <!-- Landmark / Location -->
-                    <div class="mb-3">
-                        <label asp-for="LandmarkOrAddress" class="form-label fw-bold brand-blue-text small"></label>
-                        <span class="text-danger">*</span>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light text-primary"><i class="bi bi-geo-alt"></i></span>
-                            <input asp-for="LandmarkOrAddress" class="form-control" placeholder="Halimbawa: Malapit sa tulay sang Ilawod / Tinda ni Kap" required />
-                        </div>
-                        <span asp-validation-for="LandmarkOrAddress" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Concern Title -->
-                    <div class="mb-3">
-                        <label asp-for="Title" class="form-label fw-bold brand-blue-text small"></label>
-                        <span class="text-danger">*</span>
-                        <input asp-for="Title" class="form-control" placeholder="Hal: Naguba nga poste sang suga / Barado nga kanal" required />
-                        <span asp-validation-for="Title" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Detailed Description -->
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label fw-bold brand-blue-text small"></label>
-                        <span class="text-danger">*</span>
-                        <textarea asp-for="Description" rows="4" class="form-control" placeholder="Ipaathag ang sitwasyon agud mahibal-an sang barangay ang kinahanglan nga aksyon..." required></textarea>
-                        <span asp-validation-for="Description" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Photo Upload -->
-                    <div class="mb-4">
-                        <label asp-for="PhotoAttachment" class="form-label fw-bold brand-blue-text small"></label>
-                        <input asp-for="PhotoAttachment" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" id="photoInput" />
-                        <small class="text-muted d-block mt-1">Opsyonal (max 5MB, JPG/PNG/WEBP). Makabulig sa madasig nga pag-inspeksyon.</small>
-                        <span asp-validation-for="PhotoAttachment" class="text-danger small"></span>
-
-                        <div id="imagePreviewContainer" class="mt-2 d-none">
-                            <img id="imagePreview" src="#" alt="Preview" class="img-thumbnail rounded-3" style="max-height: 180px;" />
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <!-- Complainant Info (Protected under RA 10173) -->
-                    <h6 class="fw-bold brand-orange-text mb-2">
-                        <i class="bi bi-person-lock me-1"></i> Impormasyon sang Nagasumite (Kompidensyal)
-                    </h6>
-                    <p class="small text-muted mb-3">
-                        Indi ini igapaguwa sa publiko nga tracking. Ginagamit lamang agud makontak ka sang opisyal kon kinahanglan sang dugang nga detalye.
-                    </p>
-
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label asp-for="ComplainantName" class="form-label small fw-bold text-muted"></label>
-                            <input asp-for="ComplainantName" class="form-control" placeholder="Pangalan (Opsyonal)" />
-                            <span asp-validation-for="ComplainantName" class="text-danger small"></span>
+                            <input asp-for="Title" class="form-control" placeholder="Hal: Naguba nga poste sang suga / Barado nga kanal" required />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6">
-                            <label asp-for="ComplainantContact" class="form-label small fw-bold text-muted"></label>
-                            <input asp-for="ComplainantContact" class="form-control" placeholder="Numero sang Telepono (Opsyonal)" />
-                            <span asp-validation-for="ComplainantContact" class="text-danger small"></span>
-                        </div>
-                    </div>
-
-                    <!-- 4-Digit Secret PIN -->
-                    <h6 class="fw-bold brand-orange-text mb-2">
-                        <i class="bi bi-shield-lock me-1"></i> 4-Digit Secret PIN para sa Pag-track
-                    </h6>
-                    <p class="small text-muted mb-3">
-                        Magbutang sang 4-digit nga numero (hal: <code>1234</code>) agud may proteksyon ang imo report kon gusto mo ini i-check gamit ang reference number.
-                    </p>
-
-                    <div class="row g-3 mb-4">
-                        <div class="col-sm-6">
-                            <label asp-for="VerificationPin" class="form-label small fw-bold text-dark"></label>
+                        <!-- Detailed Description -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold brand-blue-text small"></label>
                             <span class="text-danger">*</span>
-                            <input asp-for="VerificationPin" class="form-control" maxlength="4" placeholder="4-digit PIN (e.g. 2026)" required />
-                            <span asp-validation-for="VerificationPin" class="text-danger small"></span>
+                            <textarea asp-for="Description" rows="4" class="form-control" placeholder="Ipaathag ang sitwasyon agud mahibal-an sang barangay ang kinahanglan nga aksyon..." required></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-sm-6">
-                            <label asp-for="ConfirmPin" class="form-label small fw-bold text-dark"></label>
-                            <span class="text-danger">*</span>
-                            <input asp-for="ConfirmPin" class="form-control" maxlength="4" placeholder="Confirm 4-digit PIN" required />
-                            <span asp-validation-for="ConfirmPin" class="text-danger small"></span>
+                        <!-- Photo Upload -->
+                        <div class="mb-4">
+                            <label asp-for="PhotoAttachment" class="form-label fw-bold brand-blue-text small"></label>
+                            <input asp-for="PhotoAttachment" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" id="photoInput" />
+                            <small class="text-muted d-block mt-1">Opsyonal (max 5MB, JPG/PNG/WEBP). Makabulig sa madasig nga pag-inspeksyon.</small>
+                            <span asp-validation-for="PhotoAttachment" class="text-danger small"></span>
+
+                            <div id="imagePreviewContainer" class="mt-2 d-none">
+                                <img id="imagePreview" src="#" alt="Preview" class="img-thumbnail rounded-3" style="max-height: 180px;" />
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Consent -->
-                    <div class="form-check p-3 bg-light rounded-3 mb-4 border">
-                        <input asp-for="PrivacyConsent" class="form-check-input ms-0 me-2" type="checkbox" id="privacyConsent" required>
-                        <label class="form-check-label small text-dark" for="privacyConsent">
-                            Nagapasugot ako nga gamiton sang Barangay Malapad Cogon ang ini nga impormasyon para lamang sa pag-resolba sang akon ginpadala nga concern sandig sa Data Privacy Act of 2012 (RA 10173).
-                        </label>
-                        <span asp-validation-for="PrivacyConsent" class="text-danger small d-block mt-1"></span>
-                    </div>
+                        <hr class="my-4">
 
-                    <!-- Submit Button -->
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-marikina-blue py-3 fs-6 fw-bold shadow-sm" id="btnSubmit">
-                            <i class="bi bi-send me-1"></i> Ipadala ang Reklamo (Submit Concern)
-                        </button>
-                    </div>
-                </form>
+                        <!-- Complainant Info (Protected under RA 10173) -->
+                        <h6 class="fw-bold brand-orange-text mb-2">
+                            <i class="bi bi-person-lock me-1"></i> Impormasyon sang Nagasumite (Kompidensyal)
+                        </h6>
+                        <p class="small text-muted mb-3">
+                            Indi ini igapaguwa sa publiko nga tracking. Ginagamit lamang agud makontak ka sang opisyal kon kinahanglan sang dugang nga detalye.
+                        </p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="ComplainantName" class="form-label small fw-bold text-muted"></label>
+                                <input asp-for="ComplainantName" class="form-control" placeholder="Pangalan (Opsyonal)" />
+                                <span asp-validation-for="ComplainantName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="ComplainantContact" class="form-label small fw-bold text-muted"></label>
+                                <input asp-for="ComplainantContact" class="form-control" placeholder="Numero sang Telepono (Opsyonal)" />
+                                <span asp-validation-for="ComplainantContact" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- 4-Digit Secret PIN -->
+                        <h6 class="fw-bold brand-orange-text mb-2">
+                            <i class="bi bi-shield-lock me-1"></i> 4-Digit Secret PIN para sa Pag-track
+                        </h6>
+                        <p class="small text-muted mb-3">
+                            Magbutang sang 4-digit nga numero (hal: <code>1234</code>) agud may proteksyon ang imo report kon gusto mo ini i-check gamit ang reference number.
+                        </p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <label asp-for="VerificationPin" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <input asp-for="VerificationPin" class="form-control" maxlength="4" placeholder="4-digit PIN (e.g. 2026)" required />
+                                <span asp-validation-for="VerificationPin" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label asp-for="ConfirmPin" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <input asp-for="ConfirmPin" class="form-control" maxlength="4" placeholder="Confirm 4-digit PIN" required />
+                                <span asp-validation-for="ConfirmPin" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- Consent -->
+                        <div class="form-check p-3 bg-light rounded-3 mb-4 border">
+                            <input asp-for="PrivacyConsent" class="form-check-input ms-0 me-2" type="checkbox" id="privacyConsent" required>
+                            <label class="form-check-label small text-dark" for="privacyConsent">
+                                Nagapasugot ako nga gamiton sang Barangay Malapad Cogon ang ini nga impormasyon para lamang sa pag-resolba sang akon ginpadala nga concern sandig sa Data Privacy Act of 2012 (RA 10173).
+                            </label>
+                            <span asp-validation-for="PrivacyConsent" class="text-danger small d-block mt-1"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-marikina-blue py-3 fs-6 fw-bold shadow-sm" id="btnSubmit">
+                                <i class="bi bi-send me-1"></i> Ipadala ang Reklamo (Submit Concern)
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

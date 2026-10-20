@@ -6,219 +6,238 @@
     string searchTerm = ViewBag.SearchTerm as string ?? "";
 }
 
-<!-- Curved Blue Hero Header (Matching Image 5) -->
-<div class="marikina-curved-hero">
-    <div class="container-fluid px-lg-5">
-        <div class="row align-items-center">
-            <div class="col-lg-3 col-md-4 d-none d-md-block"></div>
+<div class="marikina-page-wrapper">
+    <!-- Top Blue Background Band -->
+    <div class="marikina-top-blue-band"></div>
+
+    <div class="container-fluid px-lg-5 marikina-main-content">
+        <div class="row g-4">
+            <!-- LEFT: Floating Sidebar (Positioned at Top-Left!) -->
+            <div class="col-lg-3 col-md-4">
+                <div class="marikina-sidebar">
+                    <a asp-controller="Home" asp-action="Dashboard" class="sidebar-nav-item">
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Home</span>
+                    </a>
+                    <a asp-controller="Concern" asp-action="SelectCategory" class="sidebar-nav-item">
+                        <i class="bi bi-send-fill"></i>
+                        <span>Submit Concern</span>
+                    </a>
+                    <a asp-controller="Concern" asp-action="MyConcerns" class="sidebar-nav-item active">
+                        <i class="bi bi-chat-dots-fill"></i>
+                        <span>My Concern</span>
+                    </a>
+                    <a asp-controller="Account" asp-action="Profile" class="sidebar-nav-item">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Profile</span>
+                    </a>
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                    {
+                        <hr class="border-light opacity-25 my-3">
+                        <small class="text-white-50 text-uppercase fw-bold px-3 d-block mb-2" style="font-size: 0.72rem;">Official Portal</small>
+                        <a asp-controller="Admin" asp-action="Index" class="sidebar-nav-item">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Admin Dashboard</span>
+                        </a>
+                        <a asp-controller="Reports" asp-action="Index" class="sidebar-nav-item">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span>Council Reports</span>
+                        </a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="Settings" asp-action="Index" class="sidebar-nav-item">
+                                <i class="bi bi-sliders"></i>
+                                <span>Settings</span>
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- RIGHT: My Concern Cards (Matching Image 5) -->
             <div class="col-lg-9 col-md-8">
-                <h2 class="fw-bold text-white mb-1">My-Concern</h2>
-                <p class="text-white-50 fw-semibold mb-0" style="font-size: 1.05rem;">Update of your concern</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Main Section: Sidebar + My Concern Cards (Matching Image 5) -->
-<div class="container-fluid px-lg-5 pb-5">
-    <div class="row">
-        <!-- Floating Left Sidebar Navigation Card (Matching Image 5) -->
-        <div class="col-lg-3 col-md-4 sidebar-container">
-            <div class="marikina-sidebar">
-                <a asp-controller="Home" asp-action="Dashboard" class="sidebar-nav-item">
-                    <i class="bi bi-house-door-fill"></i>
-                    <span>Home</span>
-                </a>
-                <a asp-controller="Concern" asp-action="SelectCategory" class="sidebar-nav-item">
-                    <i class="bi bi-send-fill"></i>
-                    <span>Submit Concern</span>
-                </a>
-                <a asp-controller="Concern" asp-action="MyConcerns" class="sidebar-nav-item active">
-                    <i class="bi bi-chat-dots-fill"></i>
-                    <span>My Concern</span>
-                </a>
-                <a href="#" class="sidebar-nav-item" onclick="alert('Profile details'); return false;">
-                    <i class="bi bi-person-fill"></i>
-                    <span>Profile</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Right Content: White Container with Filter Pills and Cards (Matching Image 5) -->
-        <div class="col-lg-9 col-md-8 pt-4">
-            <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 bg-white mb-4">
-                <!-- Filter Pills Row (Matching Image 5) -->
-                <div class="d-flex flex-wrap gap-2 mb-4">
-                    <a asp-action="MyConcerns" asp-route-status="All" 
-                       class="filter-pill @(currentFilter == "All" ? "active" : "")">All</a>
-
-                    <a asp-action="MyConcerns" asp-route-status="New" 
-                       class="filter-pill @(currentFilter == "New" ? "active" : "")">New</a>
-
-                    <a asp-action="MyConcerns" asp-route-status="Ongoing" 
-                       class="filter-pill @(currentFilter == "Ongoing" ? "active" : "")">Ongoing</a>
-
-                    <a asp-action="MyConcerns" asp-route-status="Acknowledge" 
-                       class="filter-pill @(currentFilter == "Acknowledge" ? "active" : "")">Acknowledge</a>
-
-                    <a asp-action="MyConcerns" asp-route-status="Completed" 
-                       class="filter-pill @(currentFilter == "Completed" ? "active" : "")">Completed</a>
-
-                    <a asp-action="MyConcerns" asp-route-status="Cancelled" 
-                       class="filter-pill @(currentFilter == "Cancelled" ? "active" : "")">Cancelled</a>
+                <!-- Header inside Blue Area -->
+                <div class="mb-3">
+                    <h2 class="fw-bold text-white mb-0">My-Concern</h2>
+                    <p class="text-white-50 fw-semibold mb-0" style="font-size: 1.05rem;">Update of your concern</p>
                 </div>
 
-                <!-- Search Bar with Magnifying Glass (Matching Image 5) -->
-                <form method="get" asp-action="MyConcerns" class="mb-4">
-                    <input type="hidden" name="status" value="@currentFilter" />
-                    <div class="input-group border rounded-3 overflow-hidden bg-light">
-                        <span class="input-group-text bg-transparent border-0 text-muted ps-3">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" name="search" value="@searchTerm" class="form-control border-0 bg-transparent fs-6 py-2" placeholder="Search" />
+                <!-- White Container with Filter Pills and Cards (Matching Image 5) -->
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 bg-white mb-4">
+                    <!-- Filter Pills Row (Matching Image 5) -->
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <a asp-action="MyConcerns" asp-route-status="All" 
+                           class="filter-pill @(currentFilter == "All" ? "active" : "")">All</a>
+
+                        <a asp-action="MyConcerns" asp-route-status="New" 
+                           class="filter-pill @(currentFilter == "New" ? "active" : "")">New</a>
+
+                        <a asp-action="MyConcerns" asp-route-status="Ongoing" 
+                           class="filter-pill @(currentFilter == "Ongoing" ? "active" : "")">Ongoing</a>
+
+                        <a asp-action="MyConcerns" asp-route-status="Acknowledge" 
+                           class="filter-pill @(currentFilter == "Acknowledge" ? "active" : "")">Acknowledge</a>
+
+                        <a asp-action="MyConcerns" asp-route-status="Completed" 
+                           class="filter-pill @(currentFilter == "Completed" ? "active" : "")">Completed</a>
+
+                        <a asp-action="MyConcerns" asp-route-status="Cancelled" 
+                           class="filter-pill @(currentFilter == "Cancelled" ? "active" : "")">Cancelled</a>
                     </div>
-                </form>
 
-                <hr class="border-secondary opacity-25 my-4">
-
-                <!-- List of Concern Ticket Cards (Matching Image 5) -->
-                @if (!Model.Any())
-                {
-                    <div class="text-center py-5 text-muted">
-                        <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
-                        <h6 class="fw-bold">No concerns found.</h6>
-                        <p class="small mb-3">You don't have any reports under the "@currentFilter" status.</p>
-                        <a asp-action="SelectCategory" class="btn btn-marikina-blue btn-sm">
-                            <i class="bi bi-send me-1"></i> Submit a New Concern
-                        </a>
-                    </div>
-                }
-                else
-                {
-                    @foreach (var item in Model)
-                    {
-                        string badgeLabel = item.Status switch
-                        {
-                            ConcernStatus.Submitted => "New",
-                            ConcernStatus.UnderReview => "Acknowledge",
-                            ConcernStatus.Accepted => "Acknowledge",
-                            ConcernStatus.Assigned => "Ongoing",
-                            ConcernStatus.InProgress => "Ongoing",
-                            ConcernStatus.Resolved => "Completed",
-                            ConcernStatus.Rejected => "Cancelled",
-                            _ => item.Status.ToString()
-                        };
-
-                        string statusBtnClass = item.Status switch
-                        {
-                            ConcernStatus.Resolved => "btn-ticket-completed",
-                            ConcernStatus.InProgress => "btn btn-warning text-dark fw-bold",
-                            ConcernStatus.Submitted => "btn btn-info text-dark fw-bold",
-                            _ => "btn btn-secondary text-white fw-bold"
-                        };
-
-                        <div class="concern-ticket-card">
-                            <!-- Status Badge (Dark Blue Pill) -->
-                            <span class="ticket-status-badge mb-2">@badgeLabel</span>
-
-                            <!-- Reference Number (Bold Orange Text) -->
-                            <div class="ticket-ref-no">@item.ReferenceNumber</div>
-
-                            <!-- Office / Category (Bold Orange/Red Text) -->
-                            <div class="ticket-office">
-                                @(item.Category?.Name?.ToUpper() ?? "BARANGAY PUBLIC SERVICES")
-                            </div>
-
-                            <!-- Timestamp -->
-                            <div class="ticket-date">
-                                @item.CreatedAt.ToLocalTime().ToString("MM-dd-yyyy hh:mm tt")
-                            </div>
-
-                            <!-- Concern Title -->
-                            <div class="ticket-title">
-                                @item.Title
-                            </div>
-
-                            <!-- Action Buttons Row (Matching Image 5: [Completed] [View] [Message]) -->
-                            <div class="d-flex flex-wrap gap-2 align-items-center pt-2 border-top">
-                                <span class="@statusBtnClass py-2 px-4 rounded-3 d-inline-block small">
-                                    @badgeLabel
-                                </span>
-
-                                <button type="button" class="btn-ticket-view small" data-bs-toggle="modal" data-bs-target="#viewModal-@item.Id">
-                                    View
-                                </button>
-
-                                <button type="button" class="btn-ticket-msg small" data-bs-toggle="modal" data-bs-target="#msgModal-@item.Id">
-                                    Timeline / Message
-                                </button>
-                            </div>
+                    <!-- Search Bar (Matching Image 5) -->
+                    <form method="get" asp-action="MyConcerns" class="mb-4">
+                        <input type="hidden" name="status" value="@currentFilter" />
+                        <div class="input-group border rounded-3 overflow-hidden bg-light">
+                            <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" name="search" value="@searchTerm" class="form-control border-0 bg-transparent fs-6 py-2" placeholder="Search" />
                         </div>
+                    </form>
 
-                        <!-- MODAL: VIEW DETAILS -->
-                        <div class="modal fade" id="viewModal-@item.Id" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content rounded-4 border-0 shadow">
-                                    <div class="modal-header bg-light border-0">
-                                        <h6 class="modal-title fw-bold brand-blue-text">
-                                            @item.ReferenceNumber Details
-                                        </h6>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body p-4">
-                                        <div class="ticket-office mb-1">@item.Category?.Name</div>
-                                        <h5 class="fw-bold mb-2">@item.Title</h5>
-                                        <p class="small text-muted mb-3"><i class="bi bi-geo-alt text-danger me-1"></i> @item.LandmarkOrAddress (@item.Sitio?.Name)</p>
-                                        
-                                        <div class="p-3 bg-light rounded-3 text-secondary small mb-3">
-                                            @item.Description
-                                        </div>
+                    <hr class="border-secondary opacity-25 my-4">
 
-                                        @if (item.Status == ConcernStatus.ForwardedToAgency)
-                                        {
-                                            <div class="alert alert-dark small mb-0">
-                                                <strong>Forwarded to:</strong> @item.ForwardedToAgency <br>
-                                                <strong>Endorsement Notes:</strong> @item.ForwardedRemarks
-                                            </div>
-                                        }
-                                    </div>
-                                    <div class="modal-footer border-0">
-                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                                    </div>
+                    <!-- List of Concern Ticket Cards (Matching Image 5) -->
+                    @if (!Model.Any())
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                            <h6 class="fw-bold">No concerns found.</h6>
+                            <p class="small mb-3">You don't have any reports under the "@currentFilter" status.</p>
+                            <a asp-action="SelectCategory" class="btn btn-marikina-blue btn-sm">
+                                <i class="bi bi-send me-1"></i> Submit a New Concern
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            string badgeLabel = item.Status switch
+                            {
+                                ConcernStatus.Submitted => "New",
+                                ConcernStatus.UnderReview => "Acknowledge",
+                                ConcernStatus.Accepted => "Acknowledge",
+                                ConcernStatus.Assigned => "Ongoing",
+                                ConcernStatus.InProgress => "Ongoing",
+                                ConcernStatus.Resolved => "Completed",
+                                ConcernStatus.Rejected => "Cancelled",
+                                _ => item.Status.ToString()
+                            };
+
+                            string statusBtnClass = item.Status switch
+                            {
+                                ConcernStatus.Resolved => "btn-ticket-completed",
+                                ConcernStatus.InProgress => "btn btn-warning text-dark fw-bold",
+                                ConcernStatus.Submitted => "btn btn-info text-dark fw-bold",
+                                _ => "btn btn-secondary text-white fw-bold"
+                            };
+
+                            <div class="concern-ticket-card">
+                                <!-- Status Badge (Dark Blue Pill) -->
+                                <span class="ticket-status-badge mb-2">@badgeLabel</span>
+
+                                <!-- Reference Number (Bold Orange Text) -->
+                                <div class="ticket-ref-no">@item.ReferenceNumber</div>
+
+                                <!-- Office / Category (Bold Orange/Red Text) -->
+                                <div class="ticket-office">
+                                    @(item.Category?.Name?.ToUpper() ?? "BARANGAY PUBLIC SERVICES")
+                                </div>
+
+                                <!-- Timestamp -->
+                                <div class="ticket-date">
+                                    @item.CreatedAt.ToLocalTime().ToString("MM-dd-yyyy hh:mm tt")
+                                </div>
+
+                                <!-- Concern Title -->
+                                <div class="ticket-title">
+                                    @item.Title
+                                </div>
+
+                                <!-- Action Buttons Row (Matching Image 5: [Completed] [View] [Message]) -->
+                                <div class="d-flex flex-wrap gap-2 align-items-center pt-2 border-top">
+                                    <span class="@statusBtnClass py-2 px-4 rounded-3 d-inline-block small">
+                                        @badgeLabel
+                                    </span>
+
+                                    <button type="button" class="btn-ticket-view small" data-bs-toggle="modal" data-bs-target="#viewModal-@item.Id">
+                                        View
+                                    </button>
+
+                                    <button type="button" class="btn-ticket-msg small" data-bs-toggle="modal" data-bs-target="#msgModal-@item.Id">
+                                        Timeline / Message
+                                    </button>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- MODAL: TIMELINE / MESSAGES -->
-                        <div class="modal fade" id="msgModal-@item.Id" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content rounded-4 border-0 shadow">
-                                    <div class="modal-header bg-light border-0">
-                                        <h6 class="modal-title fw-bold brand-blue-text">
-                                            Action Timeline &bull; @item.ReferenceNumber
-                                        </h6>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body p-4">
-                                        <div class="border-start border-3 border-primary ps-3">
-                                            @foreach (var h in item.StatusHistories.OrderByDescending(h => h.ChangedAt))
+                            <!-- MODAL: VIEW DETAILS -->
+                            <div class="modal fade" id="viewModal-@item.Id" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 border-0 shadow">
+                                        <div class="modal-header bg-light border-0">
+                                            <h6 class="modal-title fw-bold brand-blue-text">
+                                                @item.ReferenceNumber Details
+                                            </h6>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body p-4">
+                                            <div class="ticket-office mb-1">@item.Category?.Name</div>
+                                            <h5 class="fw-bold mb-2">@item.Title</h5>
+                                            <p class="small text-muted mb-3"><i class="bi bi-geo-alt text-danger me-1"></i> @item.LandmarkOrAddress (@item.Sitio?.Name)</p>
+                                            
+                                            <div class="p-3 bg-light rounded-3 text-secondary small mb-3">
+                                                @item.Description
+                                            </div>
+
+                                            @if (item.Status == ConcernStatus.ForwardedToAgency)
                                             {
-                                                <div class="mb-3">
-                                                    <small class="text-muted d-block">@h.ChangedAt.ToLocalTime().ToString("MMM dd, yyyy - hh:mm tt")</small>
-                                                    <span class="badge bg-light text-dark border me-1">@h.NewStatus</span>
-                                                    <span class="small fw-semibold text-dark">@(string.IsNullOrEmpty(h.PublicRemarks) ? "Status updated by barangay." : h.PublicRemarks)</span>
+                                                <div class="alert alert-dark small mb-0">
+                                                    <strong>Forwarded to:</strong> @item.ForwardedToAgency <br>
+                                                    <strong>Endorsement Notes:</strong> @item.ForwardedRemarks
                                                 </div>
                                             }
                                         </div>
-                                    </div>
-                                    <div class="modal-footer border-0">
-                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <!-- MODAL: TIMELINE / MESSAGES -->
+                            <div class="modal fade" id="msgModal-@item.Id" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 border-0 shadow">
+                                        <div class="modal-header bg-light border-0">
+                                            <h6 class="modal-title fw-bold brand-blue-text">
+                                                Action Timeline &bull; @item.ReferenceNumber
+                                            </h6>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body p-4">
+                                            <div class="border-start border-3 border-primary ps-3">
+                                                @foreach (var h in item.StatusHistories.OrderByDescending(h => h.ChangedAt))
+                                                {
+                                                    <div class="mb-3">
+                                                        <small class="text-muted d-block">@h.ChangedAt.ToLocalTime().ToString("MMM dd, yyyy - hh:mm tt")</small>
+                                                        <span class="badge bg-light text-dark border me-1">@h.NewStatus</span>
+                                                        <span class="small fw-semibold text-dark">@(string.IsNullOrEmpty(h.PublicRemarks) ? "Status updated by barangay." : h.PublicRemarks)</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     }
-                }
+                </div>
             </div>
         </div>
     </div>

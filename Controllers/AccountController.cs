@@ -72,7 +72,6 @@ public class AccountController : Controller
                 return Redirect(model.ReturnUrl);
             }
 
-            // Redirect to User Dashboard (Matching Image 3)
             return RedirectToAction("Dashboard", "Home");
         }
 
@@ -150,9 +149,51 @@ public class AccountController : Controller
             return View(model);
         }
 
-        // Auto sign in new resident
         await _signInManager.SignInAsync(resident, isPersistent: false);
         return RedirectToAction("Dashboard", "Home");
+    }
+
+    // --- PROFILE PAGE (Matching Image 3) ---
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return NotFound();
+
+        var viewModel = new ProfileViewModel
+        {
+            User = user,
+            StatusMessage = TempData["StatusMessage"] as string,
+            ErrorMessage = TempData["ErrorMessage"] as string
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return NotFound();
+
+        if (!ModelState.IsValid)
+        {
+            return View("Profile", new ProfileViewModel { User = user, ChangePassword = model });
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+        if (!result.Succeeded)
+        {
+            TempData["ErrorMessage"] = string.Join("; ", result.Errors.Select(e => e.Description));
+            return RedirectToAction(nameof(Profile));
+        }
+
+        await _signInManager.RefreshSignInAsync(user);
+        TempData["StatusMessage"] = "Your password has been changed successfully.";
+        return RedirectToAction(nameof(Profile));
     }
 
     [HttpPost]

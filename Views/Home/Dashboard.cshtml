@@ -3,15 +3,58 @@
     ViewData["Title"] = "Home - Dashboard";
 }
 
-<!-- Curved Blue Hero Header (Matching Image 3) -->
-<div class="marikina-curved-hero">
-    <div class="container-fluid px-lg-5">
-        <div class="row align-items-center">
-            <div class="col-lg-3 col-md-4 d-none d-md-block">
-                <!-- Spacing placeholder for sidebar alignment -->
+<div class="marikina-page-wrapper">
+    <!-- Top Blue Background Band (Matching Marikina Image 1) -->
+    <div class="marikina-top-blue-band"></div>
+
+    <div class="container-fluid px-lg-5 marikina-main-content">
+        <div class="row g-4">
+            <!-- LEFT: Floating Sidebar (Positioned at Top-Left, Level with User Header!) -->
+            <div class="col-lg-3 col-md-4">
+                <div class="marikina-sidebar">
+                    <a asp-controller="Home" asp-action="Dashboard" class="sidebar-nav-item active">
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Home</span>
+                    </a>
+                    <a asp-controller="Concern" asp-action="SelectCategory" class="sidebar-nav-item">
+                        <i class="bi bi-send-fill"></i>
+                        <span>Submit Concern</span>
+                    </a>
+                    <a asp-controller="Concern" asp-action="MyConcerns" class="sidebar-nav-item">
+                        <i class="bi bi-chat-dots-fill"></i>
+                        <span>My Concern</span>
+                    </a>
+                    <a asp-controller="Account" asp-action="Profile" class="sidebar-nav-item">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Profile</span>
+                    </a>
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                    {
+                        <hr class="border-light opacity-25 my-3">
+                        <small class="text-white-50 text-uppercase fw-bold px-3 d-block mb-2" style="font-size: 0.72rem;">Official Portal</small>
+                        <a asp-controller="Admin" asp-action="Index" class="sidebar-nav-item">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Admin Dashboard</span>
+                        </a>
+                        <a asp-controller="Reports" asp-action="Index" class="sidebar-nav-item">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span>Council Reports</span>
+                        </a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="Settings" asp-action="Index" class="sidebar-nav-item">
+                                <i class="bi bi-sliders"></i>
+                                <span>Settings</span>
+                            </a>
+                        }
+                    }
+                </div>
             </div>
+
+            <!-- RIGHT: User Greeting, Welcome Card & Dashboard Cards -->
             <div class="col-lg-9 col-md-8">
-                <!-- User Greeting Info (Matching Image 3: CRISTINE DICE) -->
+                <!-- User Greeting Info (Matching Image 1: CRISTINE DICE) -->
                 <div class="mb-3">
                     <h3 class="fw-bold text-white mb-0 text-uppercase" style="letter-spacing: 0.5px;">
                         @Model.User.FullName
@@ -21,8 +64,8 @@
                     </small>
                 </div>
 
-                <!-- Welcome Card (Matching Image 3) -->
-                <div class="card border-0 rounded-4 overflow-hidden shadow-sm" style="background: linear-gradient(135deg, #0d5f99 0%, #1573b0 100%);">
+                <!-- Welcome to e-Concern Card (Matching Image 1) -->
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm mb-4" style="background: linear-gradient(135deg, #0d5f99 0%, #1573b0 100%);">
                     <div class="card-body p-4 p-lg-5 text-white position-relative">
                         <div class="row align-items-center">
                             <div class="col-md-8 z-2">
@@ -38,127 +81,74 @@
                                 </a>
                             </div>
                             <div class="col-md-4 d-none d-md-flex justify-content-end align-items-center">
-                                <div class="bg-white bg-opacity-10 p-4 rounded-circle border border-white border-opacity-25 shadow">
-                                    <img src="~/images/malapad-cogon-seal.svg" alt="Barangay Seal" style="width: 100px; height: 100px;" />
+                                <div class="bg-white bg-opacity-10 p-3 rounded-circle border border-white border-opacity-25 shadow">
+                                    <img src="~/images/malapad-cogon-seal.svg" alt="Barangay Seal" style="width: 90px; height: 90px;" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Main Section: Floating Sidebar + 4 Blue Stat Cards (Matching Image 3) -->
-<div class="container-fluid px-lg-5 pb-5">
-    <div class="row">
-        <!-- Floating Left Sidebar Navigation Card (Matching Images 3, 4, 5) -->
-        <div class="col-lg-3 col-md-4 sidebar-container">
-            <div class="marikina-sidebar">
-                <a asp-controller="Home" asp-action="Dashboard" class="sidebar-nav-item active">
-                    <i class="bi bi-house-door-fill"></i>
-                    <span>Home</span>
-                </a>
-                <a asp-controller="Concern" asp-action="SelectCategory" class="sidebar-nav-item">
-                    <i class="bi bi-send-fill"></i>
-                    <span>Submit Concern</span>
-                </a>
-                <a asp-controller="Concern" asp-action="MyConcerns" class="sidebar-nav-item">
-                    <i class="bi bi-chat-dots-fill"></i>
-                    <span>My Concern</span>
-                </a>
-                <a href="#" class="sidebar-nav-item" onclick="alert('Posisyon: @Model.User.Position\nPurok: Malapad Cogon\nEmail: @Model.User.Email'); return false;">
-                    <i class="bi bi-person-fill"></i>
-                    <span>Profile</span>
-                </a>
+                <!-- Dashboard Heading & 4 Blue Stat Cards (Matching Image 1) -->
+                <div class="pt-2">
+                    <h4 class="fw-bold brand-blue-text mb-3" style="letter-spacing: -0.3px;">Dashboard</h4>
 
-                @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
-                {
-                    <hr class="border-light opacity-25 my-3">
-                    <small class="text-white-50 text-uppercase fw-bold px-3 d-block mb-2" style="font-size: 0.72rem;">Official Portal</small>
-                    <a asp-controller="Admin" asp-action="Index" class="sidebar-nav-item">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>Admin Dashboard</span>
-                    </a>
-                    <a asp-controller="Reports" asp-action="Index" class="sidebar-nav-item">
-                        <i class="bi bi-file-earmark-bar-graph"></i>
-                        <span>Council Reports</span>
-                    </a>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-controller="Settings" asp-action="Index" class="sidebar-nav-item">
-                            <i class="bi bi-sliders"></i>
-                            <span>Settings</span>
-                        </a>
-                    }
-                }
-            </div>
-        </div>
-
-        <!-- Right Content: Dashboard Cards (Matching Image 3) -->
-        <div class="col-lg-9 col-md-8 pt-4">
-            <h4 class="fw-bold brand-blue-text mb-3" style="letter-spacing: -0.3px;">Dashboard</h4>
-
-            <!-- Grid of 4 Blue Stat Cards -->
-            <div class="row g-3">
-                <!-- 1. New Concern -->
-                <div class="col-sm-6 col-xl-3">
-                    <a asp-controller="Concern" asp-action="MyConcerns" asp-route-status="Submitted" class="dashboard-stat-card">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="stat-card-num">@Model.NewCount</div>
-                            <div class="stat-card-icon"><i class="bi bi-grid-fill"></i></div>
+                    <div class="row g-3">
+                        <div class="col-sm-6 col-xl-3">
+                            <a asp-controller="Concern" asp-action="MyConcerns" asp-route-status="New" class="dashboard-stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="stat-card-num">@Model.NewCount</div>
+                                    <div class="stat-card-icon"><i class="bi bi-grid-fill"></i></div>
+                                </div>
+                                <div class="stat-card-label">New Concern</div>
+                            </a>
                         </div>
-                        <div class="stat-card-label">New Concern</div>
-                    </a>
-                </div>
 
-                <!-- 2. Ongoing Concern -->
-                <div class="col-sm-6 col-xl-3">
-                    <a asp-controller="Concern" asp-action="MyConcerns" asp-route-status="InProgress" class="dashboard-stat-card">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="stat-card-num">@Model.OngoingCount</div>
-                            <div class="stat-card-icon"><i class="bi bi-grid-fill"></i></div>
+                        <div class="col-sm-6 col-xl-3">
+                            <a asp-controller="Concern" asp-action="MyConcerns" asp-route-status="Ongoing" class="dashboard-stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="stat-card-num">@Model.OngoingCount</div>
+                                    <div class="stat-card-icon"><i class="bi bi-grid-fill"></i></div>
+                                </div>
+                                <div class="stat-card-label">Ongoing Concern</div>
+                            </a>
                         </div>
-                        <div class="stat-card-label">Ongoing Concern</div>
-                    </a>
-                </div>
 
-                <!-- 3. Acknowledge Concern -->
-                <div class="col-sm-6 col-xl-3">
-                    <a asp-controller="Concern" asp-action="MyConcerns" asp-route-status="UnderReview" class="dashboard-stat-card">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="stat-card-num">@Model.AcknowledgeCount</div>
-                            <div class="stat-card-icon"><i class="bi bi-grid-fill"></i></div>
+                        <div class="col-sm-6 col-xl-3">
+                            <a asp-controller="Concern" asp-action="MyConcerns" asp-route-status="Acknowledge" class="dashboard-stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="stat-card-num">@Model.AcknowledgeCount</div>
+                                    <div class="stat-card-icon"><i class="bi bi-grid-fill"></i></div>
+                                </div>
+                                <div class="stat-card-label">Acknowledge Concern</div>
+                            </a>
                         </div>
-                        <div class="stat-card-label">Acknowledge Concern</div>
-                    </a>
-                </div>
 
-                <!-- 4. Completed Concern -->
-                <div class="col-sm-6 col-xl-3">
-                    <a asp-controller="Concern" asp-action="MyConcerns" asp-route-status="Resolved" class="dashboard-stat-card">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="stat-card-num">@Model.CompletedCount</div>
-                            <div class="stat-card-icon"><i class="bi bi-grid-fill"></i></div>
+                        <div class="col-sm-6 col-xl-3">
+                            <a asp-controller="Concern" asp-action="MyConcerns" asp-route-status="Completed" class="dashboard-stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="stat-card-num">@Model.CompletedCount</div>
+                                    <div class="stat-card-icon"><i class="bi bi-grid-fill"></i></div>
+                                </div>
+                                <div class="stat-card-label">Completed Concern</div>
+                            </a>
                         </div>
-                        <div class="stat-card-label">Completed Concern</div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Quick Action helper banner below -->
-            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mt-4">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                    <div>
-                        <h5 class="fw-bold brand-blue-text mb-1">May dapat ipaabot sa barangay?</h5>
-                        <p class="text-muted small mb-0">
-                            Pumili ng kategorya tulad ng karsada, drainage, basura, suga, atbp. upang agad maaksyunan.
-                        </p>
                     </div>
-                    <a asp-controller="Concern" asp-action="SelectCategory" class="btn btn-marikina-blue px-4 py-2 fw-bold text-nowrap">
-                        <i class="bi bi-send me-1"></i> Submit a Concern Now
-                    </a>
+
+                    <!-- Action Banner -->
+                    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mt-4">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                            <div>
+                                <h5 class="fw-bold brand-blue-text mb-1">May dapat ipaabot sa barangay?</h5>
+                                <p class="text-muted small mb-0">
+                                    Pumili ng kategorya tulad ng karsada, drainage, basura, suga, atbp. upang agad maaksyunan.
+                                </p>
+                            </div>
+                            <a asp-controller="Concern" asp-action="SelectCategory" class="btn btn-marikina-blue px-4 py-2 fw-bold text-nowrap">
+                                <i class="bi bi-send me-1"></i> Submit a Concern Now
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
