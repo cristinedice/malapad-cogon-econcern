@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MalapadCogonEConcern.Data;
@@ -11,6 +12,7 @@ namespace MalapadCogonEConcern.Controllers;
 public class ConcernController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IReferenceNumberService _refService;
     private readonly IPinService _pinService;
     private readonly IFileStorageService _fileService;
@@ -18,27 +20,64 @@ public class ConcernController : Controller
 
     public ConcernController(
         ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
         IReferenceNumberService refService,
         IPinService pinService,
         IFileStorageService fileService,
         ILogger<ConcernController> logger)
     {
         _context = context;
+        _userManager = userManager;
         _refService = refService;
         _pinService = pinService;
         _fileService = fileService;
         _logger = logger;
     }
 
-    // 1. Submit Concern (GET)
+    // --- STEP 1: SELECT A CONCERN CATEGORY (Matching Image 4) ---
     [HttpGet]
-    public async Task<IActionResult> Submit()
+    public async Task<IActionResult> SelectCategory(string? search = null)
     {
-        await LoadDropdownsAsync();
-        return View(new ConcernSubmitViewModel());
+        var categories = await _context.Categories
+            .Where(c => c.IsActive)
+            .OrderBy(c => c.DisplayOrder)
+            .ToListAsync();
+
+        ViewBag.SearchTerm = search;
+        return View(categories);
     }
 
-    // 2. Submit Concern (POST)
+    // --- STEP 2: SUBMIT CONCERN FORM ---
+    [HttpGet]
+    public async Task<IActionResult> Submit(int? categoryId = null, string? title = null)
+    {
+        await LoadDropdownsAsync();
+
+        var model = new ConcernSubmitViewModel();
+        if (categoryId.HasValue)
+        {
+            model.CategoryId = categoryId.Value;
+        }
+
+        if (!string.IsNullOrEmpty(title))
+        {
+            model.Title = title;
+        }
+
+        // If user is logged in, auto-fill their info
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                model.ComplainantName = user.FullName;
+                model.ComplainantContact = user.PhoneNumber;
+            }
+        }
+
+        return View(model);
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Submit(ConcernSubmitViewModel model)
@@ -49,7 +88,6 @@ public class ConcernController : Controller
             return View(model);
         }
 
-        // Handle Photo Upload (if provided)
         FileUploadResult? uploadResult = null;
         if (model.PhotoAttachment != null && model.PhotoAttachment.Length > 0)
         {
@@ -62,9 +100,10 @@ public class ConcernController : Controller
             }
         }
 
-        // Generate Reference Number & Hash PIN
         var referenceNumber = await _refService.GenerateReferenceNumberAsync();
         var (hash, salt) = _pinService.HashPin(model.VerificationPin);
+
+        var currentUser = User.Identity?.IsAuthenticated == true ? await _userManager.GetUserAsync(User) : null;
 
         var concern = new Concern
         {
@@ -76,27 +115,26 @@ public class ConcernController : Controller
             CategoryId = model.CategoryId,
             SitioId = model.SitioId,
             LandmarkOrAddress = model.LandmarkOrAddress.Trim(),
-            ComplainantName = string.IsNullOrWhiteSpace(model.ComplainantName) ? null : model.ComplainantName.Trim(),
-            ComplainantContact = string.IsNullOrWhiteSpace(model.ComplainantContact) ? null : model.ComplainantContact.Trim(),
+            ComplainantName = string.IsNullOrWhiteSpace(model.ComplainantName) ? currentUser?.FullName : model.ComplainantName.Trim(),
+            ComplainantContact = string.IsNullOrWhiteSpace(model.ComplainantContact) ? currentUser?.PhoneNumber : model.ComplainantContact.Trim(),
+            CreatedByUserId = currentUser?.Id,
             Channel = SubmissionChannel.Online,
             Status = ConcernStatus.Submitted,
             Priority = PriorityLevel.Medium,
             CreatedAt = DateTime.UtcNow
         };
 
-        // Add Initial Status History
         var initialHistory = new ConcernStatusHistory
         {
             Concern = concern,
             PreviousStatus = ConcernStatus.Submitted,
             NewStatus = ConcernStatus.Submitted,
-            PublicRemarks = "Concern successfully submitted online by resident and queued for review.",
-            InternalRemarks = "Submitted via online resident portal.",
+            PublicRemarks = "Concern successfully submitted online by resident and queued for barangay review.",
+            InternalRemarks = $"Submitted via online resident portal by {(currentUser != null ? currentUser.Email : "Resident")}.",
             ChangedAt = DateTime.UtcNow
         };
         concern.StatusHistories.Add(initialHistory);
 
-        // Add Attachment Record
         if (uploadResult != null && uploadResult.Success)
         {
             var attachment = new ConcernAttachment
@@ -115,16 +153,15 @@ public class ConcernController : Controller
         await _context.Concerns.AddAsync(concern);
         await _context.SaveChangesAsync();
 
-        _logger.LogInformation("New concern submitted: {RefNo}", referenceNumber);
+        _logger.LogInformation("New concern created: {RefNo}", referenceNumber);
 
-        // Store confirmation data in TempData
         TempData["RefNo"] = referenceNumber;
         TempData["Pin"] = model.VerificationPin;
 
         return RedirectToAction(nameof(Confirmation), new { refNo = referenceNumber });
     }
 
-    // 3. Confirmation Receipt (GET)
+    // --- STEP 3: SUBMISSION CONFIRMATION ---
     [HttpGet]
     public async Task<IActionResult> Confirmation(string refNo)
     {
@@ -158,14 +195,65 @@ public class ConcernController : Controller
         return View(viewModel);
     }
 
-    // 4. Track Concern (GET)
+    // --- STEP 4: MY CONCERNS FEED (Matching Image 5) ---
+    [HttpGet]
+    public async Task<IActionResult> MyConcerns(string? status = null, string? search = null)
+    {
+        var currentUser = User.Identity?.IsAuthenticated == true ? await _userManager.GetUserAsync(User) : null;
+
+        var query = _context.Concerns
+            .Include(c => c.Category)
+            .Include(c => c.Sitio)
+            .Include(c => c.StatusHistories)
+            .AsQueryable();
+
+        // Scope to current resident if logged in and not admin/staff
+        if (currentUser != null && !User.IsInRole("Admin") && !User.IsInRole("Staff"))
+        {
+            query = query.Where(c => c.CreatedByUserId == currentUser.Id || 
+                                     c.ComplainantContact == currentUser.PhoneNumber ||
+                                     c.ComplainantName == currentUser.FullName);
+        }
+
+        // Status Filter Pill
+        if (!string.IsNullOrEmpty(status) && status != "All")
+        {
+            if (status.Equals("New", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(c => c.Status == ConcernStatus.Submitted);
+            else if (status.Equals("Ongoing", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(c => c.Status == ConcernStatus.InProgress || c.Status == ConcernStatus.Assigned);
+            else if (status.Equals("Acknowledge", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(c => c.Status == ConcernStatus.UnderReview || c.Status == ConcernStatus.Accepted);
+            else if (status.Equals("Completed", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(c => c.Status == ConcernStatus.Resolved);
+            else if (status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                query = query.Where(c => c.Status == ConcernStatus.Rejected);
+        }
+
+        // Search Filter
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = search.Trim().ToLower();
+            query = query.Where(c => c.ReferenceNumber.ToLower().Contains(term) ||
+                                     c.Title.ToLower().Contains(term) ||
+                                     (c.Category != null && c.Category.Name.ToLower().Contains(term)));
+        }
+
+        var concerns = await query.OrderByDescending(c => c.CreatedAt).ToListAsync();
+
+        ViewBag.CurrentFilter = string.IsNullOrEmpty(status) ? "All" : status;
+        ViewBag.SearchTerm = search;
+
+        return View(concerns);
+    }
+
+    // --- STEP 5: TRACK CONCERN BY REFERENCE NUMBER & PIN ---
     [HttpGet]
     public IActionResult Track(string? refNo = null)
     {
         return View(new ConcernTrackViewModel { ReferenceNumber = refNo ?? string.Empty });
     }
 
-    // 5. Track Concern (POST - Secure PIN Verified)
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Track(ConcernTrackViewModel model)
@@ -186,26 +274,21 @@ public class ConcernController : Controller
                 .ThenInclude(h => h.ChangedByUser)
             .FirstOrDefaultAsync(c => c.ReferenceNumber.ToLower() == cleanRefNo.ToLower());
 
-        // Validate Reference No. and PIN
         if (concern == null || !_pinService.VerifyPin(cleanPin, concern.VerificationPinHash, concern.TrackingSalt))
         {
             model.ErrorMessage = "No matching concern found for this Reference Number and PIN. Please check your credentials.";
             return View(model);
         }
 
-        // Build safe public tracking result (No private complainant data is exposed)
-        var submissionPhoto = concern.Attachments
-            .FirstOrDefault(a => a.AttachmentType == AttachmentType.SubmissionPhoto);
-
-        var resolutionPhoto = concern.Attachments
-            .FirstOrDefault(a => a.AttachmentType == AttachmentType.ResolutionProof);
+        var submissionPhoto = concern.Attachments.FirstOrDefault(a => a.AttachmentType == AttachmentType.SubmissionPhoto);
+        var resolutionPhoto = concern.Attachments.FirstOrDefault(a => a.AttachmentType == AttachmentType.ResolutionProof);
 
         var submissionPhotoUrl = submissionPhoto != null 
             ? $"/uploads/concerns/{concern.CreatedAt.Year}/{concern.CreatedAt.Month:D2}/{submissionPhoto.StoredFileName}" 
             : null;
 
         var resolutionPhotoUrl = resolutionPhoto != null 
-            ? $"/uploads/concerns/{concern.CreatedAt.Year}/{concern.CreatedAt.Month:D2}/{resolutionPhoto.StoredFileName}" 
+            ? $"/uploads/resolutions/{resolutionPhoto.UploadedAt.Year}/{resolutionPhoto.UploadedAt.Month:D2}/{resolutionPhoto.StoredFileName}" 
             : null;
 
         var timeline = concern.StatusHistories

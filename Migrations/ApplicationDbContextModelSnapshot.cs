@@ -200,6 +200,9 @@ namespace MalapadCogonEConcern.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(3000)
@@ -262,6 +265,8 @@ namespace MalapadCogonEConcern.Migrations
                     b.HasIndex("AssignedToUserId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("ReferenceNumber")
                         .IsUnique();
@@ -535,6 +540,11 @@ namespace MalapadCogonEConcern.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("MalapadCogonEConcern.Models.Entities.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("MalapadCogonEConcern.Models.Entities.Sitio", "Sitio")
                         .WithMany("Concerns")
                         .HasForeignKey("SitioId")
@@ -544,6 +554,8 @@ namespace MalapadCogonEConcern.Migrations
                     b.Navigation("AssignedToUser");
 
                     b.Navigation("Category");
+
+                    b.Navigation("CreatedByUser");
 
                     b.Navigation("Sitio");
                 });

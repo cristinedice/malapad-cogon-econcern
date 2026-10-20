@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="120" height="120">
+  <defs>
+    <radialGradient id="sealBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="85%" stop-color="#f0f7fd" />
+      <stop offset="100%" stop-color="#d9ebf9" />
+    </radialGradient>
+    <linearGradient id="blueRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b5791" />
+      <stop offset="100%" stop-color="#073a62" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd54f" />
+      <stop offset="100%" stop-color="#f57f17" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Ring -->
+  <circle cx="100" cy="100" r="96" fill="url(#blueRing)" stroke="#e85d26" stroke-width="3" />
+  <circle cx="100" cy="100" r="82" fill="url(#sealBg)" stroke="#ffd54f" stroke-width="2" />
+
+  <!-- Outer Text Path Circle -->
+  <path id="textPathUpper" d="M 28 100 A 72 72 0 1 1 172 100" fill="none" />
+  <text fill="#ffffff" font-family="Arial, sans-serif" font-size="10.5" font-weight="bold" letter-spacing="1.2">
+    <textPath href="#textPathUpper" startOffset="50%" text-anchor="middle">
+      BARANGAY MALAPAD COGON
+    </textPath>
+  </text>
+
+  <path id="textPathLower" d="M 172 100 A 72 72 0 0 1 28 100" fill="none" />
+  <text fill="#ffd54f" font-family="Arial, sans-serif" font-size="9" font-weight="bold" letter-spacing="2">
+    <textPath href="#textPathLower" startOffset="50%" text-anchor="middle">
+      SIGMA, CAPIZ • 1968
+    </textPath>
+  </text>
+
+  <!-- Inner Decorative Elements -->
+  <!-- Center Shield -->
+  <path d="M 75 62 L 125 62 Q 130 95 100 120 Q 70 95 75 62 Z" fill="#ffffff" stroke="#0b5791" stroke-width="2.5" />
+  <!-- Shield Upper (Blue) -->
+  <path d="M 75 62 L 100 62 L 100 88 L 76 88 Q 75 75 75 62 Z" fill="#0b5791" />
+  <!-- Shield Upper Right (Red/Orange) -->
+  <path d="M 100 62 L 125 62 Q 125 75 124 88 L 100 88 Z" fill="#e85d26" />
+  
+  <!-- Philippine 8-Ray Sun in Center -->
+  <circle cx="100" cy="75" r="7" fill="url(#goldGradient)" />
+  <!-- Sun Rays -->
+  <g stroke="#f57f17" stroke-width="1.8">
+    <line x1="100" y1="63" x2="100" y2="67" />
+    <line x1="100" y1="83" x2="100" y2="87" />
+    <line x1="88" y1="75" x2="92" y2="75" />
+    <line x1="108" y1="75" x2="112" y2="75" />
+    <line x1="91" y1="66" x2="94" y2="69" />
+    <line x1="106" y1="81" x2="109" y2="84" />
+    <line x1="91" y1="84" x2="94" y2="81" />
+    <line x1="106" y1="69" x2="109" y2="66" />
+  </g>
+
+  <!-- Rice Sheaves / Agriculture (Capiz Vitality) -->
+  <path d="M 82 108 Q 100 95 100 115 Q 100 95 118 108" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" />
+  <circle cx="90" cy="102" r="2.5" fill="#ffd54f" />
+  <circle cx="100" cy="98" r="2.5" fill="#ffd54f" />
+  <circle cx="110" cy="102" r="2.5" fill="#ffd54f" />
+
+  <!-- Stars -->
+  <polygon points="100,50 102,55 107,55 103,58 105,63 100,60 95,63 97,58 93,55 98,55" fill="#ffd54f" />
+  <polygon points="78,92 79,95 82,95 80,97 81,100 78,98 75,100 76,97 74,95 77,95" fill="#ffd54f" />
+  <polygon points="122,92 123,95 126,95 124,97 125,100 122,98 119,100 120,97 118,95 121,95" fill="#ffd54f" />
+
+  <!-- Bottom Ribbon -->
+  <path d="M 60 135 Q 100 145 140 135 L 135 145 Q 100 155 65 145 Z" fill="#0b5791" stroke="#e85d26" stroke-width="1.2" />
+  <text x="100" y="143" fill="#ffffff" font-family="Arial, sans-serif" font-size="7.5" font-weight="bold" text-anchor="middle">
+    SERVICE • INTEGRITY
+  </text>
+</svg>

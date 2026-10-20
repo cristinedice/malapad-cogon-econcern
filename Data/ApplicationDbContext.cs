@@ -42,6 +42,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                   .WithMany(u => u.AssignedConcerns)
                   .HasForeignKey(c => c.AssignedToUserId)
                   .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(c => c.CreatedByUser)
+                  .WithMany()
+                  .HasForeignKey(c => c.CreatedByUserId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Attachments

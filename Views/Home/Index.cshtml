@@ -1,179 +1,83 @@
-@model MalapadCogonEConcern.ViewModels.HomeIndexViewModel
 @{
-    ViewData["Title"] = "Official Community Reporting & Tracking";
+    ViewData["Title"] = "Barangay Malapad Cogon e-Concern";
+    Layout = null; // Clean dedicated full-bleed landing page matching Image 1
 }
 
-<!-- Hero Section -->
-<section class="py-5 text-white" style="background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%);">
-    <div class="container py-3">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-7 text-center text-lg-start">
-                <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-25 px-3 py-1 rounded-pill mb-3">
-                    <i class="bi bi-geo-alt-fill text-warning"></i>
-                    <span class="small fw-semibold">Municipality of Sigma, Province of Capiz</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Barangay Malapad Cogon e-Concern</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/marikina-style.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Content Container -->
+    <div class="container pt-4 pt-md-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <!-- Official Barangay Seal -->
+                <div class="mb-3">
+                    <img src="~/images/malapad-cogon-seal.svg" alt="Barangay Malapad Cogon Seal" style="width: 105px; height: 105px;" />
                 </div>
-                <h1 class="display-5 fw-bold mb-3">
-                    Barangay Malapad Cogon <br>
-                    <span class="text-warning">e-CONCERN System</span>
+
+                <!-- Brand Title (Blue / Orange) -->
+                <h1 class="brand-title mb-3">
+                    <span class="brand-blue-text d-block" style="font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px;">MALAPAD COGON</span>
+                    <span class="brand-orange-text d-block" style="font-size: 2.1rem; font-weight: 700; margin-top: -6px;">e-Concern</span>
                 </h1>
-                <p class="lead mb-4 opacity-90">
-                    A simple and direct community reporting platform for our residents. Report damaged roads, clogged drainage, streetlights, waste, and agricultural concerns directly to barangay officials.
+
+                <!-- Tagline -->
+                <p class="text-secondary mx-auto mb-4" style="max-width: 580px; font-size: 1.05rem; line-height: 1.5; font-weight: 500;">
+                    Sa Alagang Malapad Cogon, may nakikinig at tumutugon.<br>
+                    Gamitin ang E-Concern upang maiparating ang inyong mensahe sa kinauukulan—mabilis, madali, at may malasakit.
                 </p>
-                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
-                    <a asp-controller="Concern" asp-action="Submit" class="btn btn-warning btn-lg px-4 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-pencil-square fs-5"></i>
-                        <span>Magsumite sang Concern</span>
+
+                <!-- Click Here to Login Button -->
+                <div class="mx-auto mb-3" style="max-width: 420px;">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-marikina-blue w-100 py-3 fs-6 d-block shadow-sm">
+                        Click here to login
                     </a>
-                    <a asp-controller="Concern" asp-action="Track" class="btn btn-outline-light btn-lg px-4 py-3 fw-bold d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-search fs-5"></i>
-                        <span>I-track ang Reklamo</span>
+                </div>
+
+                <!-- Create an account Link -->
+                <div class="mb-4">
+                    <a asp-controller="Account" asp-action="Register" class="text-decoration-none fw-bold brand-blue-text fs-6">
+                        Create an account
+                    </a>
+                </div>
+
+                <!-- Fast Track Reference without Account -->
+                <div class="mb-4">
+                    <a asp-controller="Concern" asp-action="Track" class="small text-muted text-decoration-none border px-3 py-1 rounded-pill bg-light">
+                        <i class="bi bi-search me-1 text-primary"></i> May Reference Number na? I-check ang Status dito
                     </a>
                 </div>
             </div>
-
-            <div class="col-lg-5">
-                <!-- Status Metrics Card -->
-                <div class="card border-0 shadow-lg rounded-4 text-dark p-4 bg-white">
-                    <h5 class="fw-bold mb-3 d-flex align-items-center gap-2 text-success">
-                        <i class="bi bi-activity"></i> Community Action Tracker
-                    </h5>
-                    <div class="row g-3 text-center">
-                        <div class="col-4">
-                            <div class="p-3 bg-light rounded-3">
-                                <div class="fs-3 fw-bold text-primary">@Model.TotalConcerns</div>
-                                <div class="small text-muted fw-semibold">Total Received</div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="p-3 bg-light rounded-3">
-                                <div class="fs-3 fw-bold text-warning">@Model.InProgressConcerns</div>
-                                <div class="small text-muted fw-semibold">In Progress</div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="p-3 bg-light rounded-3">
-                                <div class="fs-3 fw-bold text-success">@Model.ResolvedConcerns</div>
-                                <div class="small text-muted fw-semibold">Resolved</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <hr class="my-3">
-
-                    <!-- Quick Track Widget -->
-                    <div>
-                        <label class="form-label small fw-bold text-muted mb-1">May Reference Number ka na?</label>
-                        <form asp-controller="Concern" asp-action="Track" method="get" class="d-flex gap-2">
-                            <input type="text" name="refNo" class="form-control form-control-sm" placeholder="Hal: MC-2026-0001" required>
-                            <button type="submit" class="btn btn-sm btn-success px-3">
-                                <i class="bi bi-arrow-right"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-</section>
 
-<!-- How It Works Section -->
-<section class="py-5 bg-white">
-    <div class="container">
-        <div class="text-center mb-5">
-            <span class="text-success fw-bold text-uppercase small">Step-by-Step Guide</span>
-            <h2 class="fw-bold">Paano Magsumite kag Mag-monitor?</h2>
-            <p class="text-muted">Tatlo ka mahapos nga tikang para sa pumuluyo sang Barangay Malapad Cogon.</p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4 text-center rounded-4">
-                    <div class="rounded-circle bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 64px; height: 64px;">
-                        <i class="bi bi-file-earmark-text fs-2"></i>
-                    </div>
-                    <h5 class="fw-bold">1. Magsumite sang Detalye</h5>
-                    <p class="text-muted small mb-0">
-                        Pilia ang kategorya (karsada, kanal, basura, etc.), isulat ang lokasyon o purok/sitio, kag mag-upload sang litrato kon may ara.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4 text-center rounded-4">
-                    <div class="rounded-circle bg-warning bg-opacity-10 text-warning d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 64px; height: 64px;">
-                        <i class="bi bi-qr-code fs-2"></i>
-                    </div>
-                    <h5 class="fw-bold">2. Magkuha sang Reference No. & PIN</h5>
-                    <p class="text-muted small mb-0">
-                        Pagka-submit, makabaton ka sang unique Reference Number (e.g. <code>MC-2026-0001</code>) kag magbutang sang imo 4-digit secret PIN para protektado ang imo report.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4 text-center rounded-4">
-                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 64px; height: 64px;">
-                        <i class="bi bi-check-circle fs-2"></i>
-                    </div>
-                    <h5 class="fw-bold">3. Pag-aksyon sang Barangay</h5>
-                    <p class="text-muted small mb-0">
-                        I-review sang opisyal sang barangay, i-assign sa staff/tanod, kag makita mo ang adlaw-adlaw nga aksyon kag pruweba nga litrato pagka-resolba.
-                    </p>
-                </div>
-            </div>
+    <!-- Bottom Silhouette Wave with Alagang Malapad Cogon Badge -->
+    <div class="bottom-wave-wrapper">
+        <img src="~/images/community-wave-footer.svg" class="bottom-wave-img" alt="Community Wave Footer" />
+        <div class="bottom-overlay-badge">
+            <span class="text-alagang">Alagang</span>
+            <span class="text-place">Malapad Cogon</span>
+            <span class="text-unit">Barangay</span>
         </div>
     </div>
-</section>
 
-<!-- Categories Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
-            <div>
-                <span class="text-success fw-bold text-uppercase small">Covered Services</span>
-                <h3 class="fw-bold mb-1">Ano ang mga Mahimo I-report?</h3>
-                <p class="text-muted small mb-0">Mga pampubliko kag pang-komunidad nga mga isyu sa Barangay Malapad Cogon:</p>
-            </div>
-            <a asp-controller="Concern" asp-action="Submit" class="btn btn-outline-success mt-3 mt-md-0">
-                Magsumite sang Reklamo Karon <i class="bi bi-arrow-right ms-1"></i>
-            </a>
-        </div>
-
-        <div class="row g-3">
-            @foreach (var cat in Model.Categories)
-            {
-                <div class="col-md-4 col-sm-6">
-                    <div class="card h-100 border-0 shadow-sm p-3 rounded-3">
-                        <div class="d-flex align-items-start gap-3">
-                            <div class="bg-success text-white rounded p-2 fs-4">
-                                <i class="bi @cat.IconClass"></i>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold mb-1">@cat.Name</h6>
-                                <p class="small text-muted mb-0">@cat.Description</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</section>
-
-<!-- Important Scope Notice -->
-<section class="py-4 bg-white border-top">
-    <div class="container">
-        <div class="alert alert-warning border-warning d-flex align-items-start gap-3 rounded-4 p-4 mb-0" role="alert">
-            <i class="bi bi-exclamation-triangle-fill fs-2 text-warning flex-shrink-0"></i>
-            <div>
-                <h5 class="alert-heading fw-bold mb-1">Pahibalo Parte sa mga Pribado nga Reklamo kag Emergency</h5>
-                <p class="small mb-2">
-                    Ang ini nga e-Concern website para lamang sa mga <strong>pampubliko kag pang-imprastraktura nga concerns</strong> (karsada, suga, drainage, basura, kalamidad, pasilidad).
-                </p>
-                <p class="small mb-0">
-                    Kon ang imo reklamo may kaangtanan sa <strong>personal nga away sang magka-kaingod, utang, o pamilya</strong>, palihog magkadto direkta sa Barangay Hall para sa <em>Katarungang Pambarangay (Lupon Tagapamayapa)</em>. Kon may emerhensya sa sunog o krimen, kontakon gilayon ang <strong>Sigma MPS (0998-598-6240)</strong> ukon <strong>Sigma BFP</strong>.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

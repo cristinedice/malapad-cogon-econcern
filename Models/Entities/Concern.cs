@@ -52,6 +52,10 @@ public class Concern
     public string? AssignedToUserId { get; set; }
     public virtual ApplicationUser? AssignedToUser { get; set; }
 
+    // Submitter Account (if logged in resident)
+    public string? CreatedByUserId { get; set; }
+    public virtual ApplicationUser? CreatedByUser { get; set; }
+
     // External Forwarding (LGU Sigma, CAPELCO, DPWH, MENRO, etc.)
     [StringLength(120)]
     public string? ForwardedToAgency { get; set; }

@@ -1,8 +1,11 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MalapadCogonEConcern.Data;
 using MalapadCogonEConcern.Models;
+using MalapadCogonEConcern.Models.Entities;
 using MalapadCogonEConcern.Models.Enums;
 using MalapadCogonEConcern.ViewModels;
 
@@ -11,41 +14,63 @@ namespace MalapadCogonEConcern.Controllers;
 public class HomeController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _config;
     private readonly ILogger<HomeController> _logger;
 
     public HomeController(
         ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
         IConfiguration config,
         ILogger<HomeController> logger)
     {
         _context = context;
+        _userManager = userManager;
         _config = config;
         _logger = logger;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var categories = await _context.Categories
-            .Where(c => c.IsActive)
-            .OrderBy(c => c.DisplayOrder)
-            .ToListAsync();
-
-        var total = await _context.Concerns.CountAsync();
-        var inProgress = await _context.Concerns
-            .CountAsync(c => c.Status == ConcernStatus.InProgress || c.Status == ConcernStatus.Assigned);
-        var resolved = await _context.Concerns
-            .CountAsync(c => c.Status == ConcernStatus.Resolved);
-
-        var viewModel = new HomeIndexViewModel
+        if (User.Identity?.IsAuthenticated == true)
         {
-            Categories = categories,
-            TotalConcerns = total,
-            InProgressConcerns = inProgress,
-            ResolvedConcerns = resolved,
-            BarangayName = _config["SystemSettings:BarangayName"] ?? "Barangay Malapad, Cogon",
-            Municipality = _config["SystemSettings:Municipality"] ?? "Sigma",
-            Province = _config["SystemSettings:Province"] ?? "Capiz"
+            return RedirectToAction(nameof(Dashboard));
+        }
+
+        return View();
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Dashboard()
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        var query = _context.Concerns.AsQueryable();
+
+        // If regular resident, scope to their own reports
+        if (!User.IsInRole("Admin") && !User.IsInRole("Staff"))
+        {
+            query = query.Where(c => c.CreatedByUserId == currentUser.Id ||
+                                     c.ComplainantContact == currentUser.PhoneNumber ||
+                                     c.ComplainantName == currentUser.FullName);
+        }
+
+        var newCount = await query.CountAsync(c => c.Status == ConcernStatus.Submitted);
+        var ongoingCount = await query.CountAsync(c => c.Status == ConcernStatus.InProgress || c.Status == ConcernStatus.Assigned);
+        var ackCount = await query.CountAsync(c => c.Status == ConcernStatus.UnderReview || c.Status == ConcernStatus.Accepted);
+        var completedCount = await query.CountAsync(c => c.Status == ConcernStatus.Resolved);
+
+        var viewModel = new UserDashboardViewModel
+        {
+            User = currentUser,
+            NewCount = newCount,
+            OngoingCount = ongoingCount,
+            AcknowledgeCount = ackCount,
+            CompletedCount = completedCount
         };
 
         return View(viewModel);

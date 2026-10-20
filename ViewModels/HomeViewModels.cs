@@ -12,3 +12,12 @@ public class HomeIndexViewModel
     public string Municipality { get; set; } = "Sigma";
     public string Province { get; set; } = "Capiz";
 }
+
+public class UserDashboardViewModel
+{
+    public ApplicationUser User { get; set; } = default!;
+    public int NewCount { get; set; }
+    public int OngoingCount { get; set; }
+    public int AcknowledgeCount { get; set; }
+    public int CompletedCount { get; set; }
+}

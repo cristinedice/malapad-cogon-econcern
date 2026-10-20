@@ -1,0 +1,218 @@
+@model List<MalapadCogonEConcern.Models.Entities.Category>
+@{
+    ViewData["Title"] = "Select a Concern";
+}
+
+<!-- Curved Blue Hero Header (Matching Image 4) -->
+<div class="marikina-curved-hero">
+    <div class="container-fluid px-lg-5">
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-md-4 d-none d-md-block"></div>
+            <div class="col-lg-9 col-md-8">
+                <h2 class="fw-bold text-white mb-1">e-Concern</h2>
+                <p class="text-white-50 fw-semibold mb-0" style="font-size: 1.05rem;">Select a Concern</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Section: Sidebar + Category Selector Card (Matching Image 4) -->
+<div class="container-fluid px-lg-5 pb-5">
+    <div class="row">
+        <!-- Floating Left Sidebar Navigation Card (Matching Image 4) -->
+        <div class="col-lg-3 col-md-4 sidebar-container">
+            <div class="marikina-sidebar">
+                <a asp-controller="Home" asp-action="Dashboard" class="sidebar-nav-item">
+                    <i class="bi bi-house-door-fill"></i>
+                    <span>Home</span>
+                </a>
+                <a asp-controller="Concern" asp-action="SelectCategory" class="sidebar-nav-item active">
+                    <i class="bi bi-send-fill"></i>
+                    <span>Submit Concern</span>
+                </a>
+                <a asp-controller="Concern" asp-action="MyConcerns" class="sidebar-nav-item">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span>My Concern</span>
+                </a>
+                <a href="#" class="sidebar-nav-item" onclick="alert('Profile view'); return false;">
+                    <i class="bi bi-person-fill"></i>
+                    <span>Profile</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Content: White Category Card (Matching Image 4) -->
+        <div class="col-lg-9 col-md-8 pt-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 bg-white">
+                <!-- Search Box with Magnifying Glass (Matching Image 4) -->
+                <div class="mb-4">
+                    <div class="input-group input-group-lg border rounded-3 overflow-hidden bg-light">
+                        <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                            <i class="bi bi-search fs-5"></i>
+                        </span>
+                        <input type="text" id="categorySearchInput" class="form-control border-0 bg-transparent fs-6" placeholder="Search a concern (e.g. karsada, suga, basura, kanal)..." />
+                    </div>
+                </div>
+
+                <!-- Grouped Categories with Blue Pill Buttons (Matching Image 4) -->
+                <div id="categoryGroupsContainer">
+                    <!-- 1. Road and Infrastructure -->
+                    <div class="category-block mb-4">
+                        <div class="category-group-title">
+                            Road, Pathways and Street Lighting
+                        </div>
+                        <div>
+                            <a asp-action="Submit" asp-route-categoryId="1" asp-route-title="Naguba nga Karsada / Damaged Road" class="category-pill-btn">
+                                Damaged Roads &amp; Pathways
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="1" asp-route-title="Guba nga Poste sang Suga / Broken Streetlight" class="category-pill-btn">
+                                Broken Streetlight
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="1" asp-route-title="Guba nga Tulay ukon Footbridge" class="category-pill-btn">
+                                Bridge &amp; Footbridge Concern
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="1" asp-route-title="Farm-to-Market Road Issue" class="category-pill-btn">
+                                Farm-to-Market Road
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 2. Drainage and Flooding -->
+                    <div class="category-block mb-4">
+                        <div class="category-group-title">
+                            Drainage, Flood Control and Waterways
+                        </div>
+                        <div>
+                            <a asp-action="Submit" asp-route-categoryId="2" asp-route-title="Barado nga Kanal o Culvert" class="category-pill-btn">
+                                Clogged Drainage &amp; Culvert
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="2" asp-route-title="Baha / Flood Hazard Area" class="category-pill-btn">
+                                Flood-Prone Area Obstruction
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="2" asp-route-title="Barado nga Suba o Waterway" class="category-pill-btn">
+                                Waterway Siltation
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 3. Waste Management -->
+                    <div class="category-block mb-4">
+                        <div class="category-group-title">
+                            Environmental Cleanliness &amp; Waste Management
+                        </div>
+                        <div>
+                            <a asp-action="Submit" asp-route-categoryId="3" asp-route-title="Hakot Basura / Garbage Collection" class="category-pill-btn">
+                                Garbage Collection
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="3" asp-route-title="Hakot Kuyagot / Tambak nga Basura" class="category-pill-btn">
+                                Hakot Kuyagot / Basura
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="3" asp-route-title="Illegal Dumping sa Publiko nga Lugar" class="category-pill-btn">
+                                Illegal Dumping
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="3" asp-route-title="Paglimpyo sang Publiko nga Espasyo" class="category-pill-btn">
+                                Public Space Cleanup
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 4. Agriculture and Livelihood -->
+                    <div class="category-block mb-4">
+                        <div class="category-group-title">
+                            Agriculture, Irrigation &amp; Rural Livelihood
+                        </div>
+                        <div>
+                            <a asp-action="Submit" asp-route-categoryId="4" asp-route-title="Communal Irrigation Canal Concern" class="category-pill-btn">
+                                Communal Irrigation Canal
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="4" asp-route-title="Dalan pakadto sa Uma / Farm Access Pathway" class="category-pill-btn">
+                                Farm Access Pathway
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="4" asp-route-title="Pasilidad sang Agrikultura / Agricultural Facility" class="category-pill-btn">
+                                Agricultural Facility Concern
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 5. Public Facilities -->
+                    <div class="category-block mb-4">
+                        <div class="category-group-title">
+                            Barangay Public Facilities &amp; Maintenance
+                        </div>
+                        <div>
+                            <a asp-action="Submit" asp-route-categoryId="5" asp-route-title="Barangay Covered Gym Maintenance" class="category-pill-btn">
+                                Barangay Covered Gym
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="5" asp-route-title="Barangay Hall Facility Maintenance" class="category-pill-btn">
+                                Barangay Hall Facility
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="5" asp-route-title="Barangay Daycare / Health Station" class="category-pill-btn">
+                                Daycare &amp; Health Station
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 6. Disaster and Hazard -->
+                    <div class="category-block mb-4">
+                        <div class="category-group-title">
+                            Disaster Risk Reduction &amp; Hazards
+                        </div>
+                        <div>
+                            <a asp-action="Submit" asp-route-categoryId="6" asp-route-title="Nakatumba nga Kahoy sa Dalan / Fallen Tree" class="category-pill-btn">
+                                Fallen Trees / Road Hazard
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="6" asp-route-title="Katalagman sa Kuryente / Dangling Wire" class="category-pill-btn">
+                                Dangling Electric Wire (CAPELCO)
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="6" asp-route-title="Dutang Nagtupak / Landslide Hazard" class="category-pill-btn">
+                                Landslide / Soil Erosion
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 7. Other Community Concerns -->
+                    <div class="category-block mb-3">
+                        <div class="category-group-title">
+                            Other Community Concerns &amp; Public Assistance
+                        </div>
+                        <div>
+                            <a asp-action="Submit" asp-route-categoryId="7" asp-route-title="Pangabay sang Bulig sa Barangay" class="category-pill-btn">
+                                Public Assistance
+                            </a>
+                            <a asp-action="Submit" asp-route-categoryId="7" asp-route-title="Pangkabilugan nga Concern / General Inquiry" class="category-pill-btn">
+                                General Community Concerns
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Real-time live search filter for category pills
+        document.getElementById('categorySearchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase().trim();
+            const blocks = document.querySelectorAll('.category-block');
+
+            blocks.forEach(function(block) {
+                const pills = block.querySelectorAll('.category-pill-btn');
+                let hasMatch = false;
+
+                pills.forEach(function(pill) {
+                    const text = pill.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        pill.style.display = 'inline-block';
+                        hasMatch = true;
+                    } else {
+                        pill.style.display = query === '' ? 'inline-block' : 'none';
+                    }
+                });
+
+                block.style.display = (hasMatch || query === '') ? 'block' : 'none';
+            });
+        });
+    </script>
+}
