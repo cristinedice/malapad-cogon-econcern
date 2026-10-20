@@ -1,0 +1,72 @@
+@model MalapadCogonEConcern.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Barangay Official Login";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="p-4 text-white text-center" style="background: linear-gradient(135deg, #0d3813 0%, #1b5e20 100%);">
+                    <i class="bi bi-shield-lock-fill fs-1 text-warning mb-2"></i>
+                    <h4 class="fw-bold mb-0">Barangay Official Portal</h4>
+                    <small class="text-white-50">Malapad Cogon, Sigma, Capiz</small>
+                </div>
+
+                <div class="card-body p-4 bg-white">
+                    <form asp-action="Login" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ReturnUrl" />
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label small fw-bold text-muted"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Email" class="form-control" placeholder="admin@malapadcogon.gov.ph" required autofocus />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label small fw-bold text-muted"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+                                <input asp-for="Password" class="form-control" placeholder="••••••••" required />
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" asp-for="RememberMe" id="rememberMe">
+                            <label class="form-check-label small text-muted" for="rememberMe">
+                                Remember this session
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                        </button>
+                    </form>
+
+                    <div class="mt-4 p-3 bg-light rounded-3 small text-muted border">
+                        <strong class="d-block text-dark mb-1"><i class="bi bi-info-circle me-1"></i> Default Test Accounts:</strong>
+                        <div><strong>Admin:</strong> <code>admin@malapadcogon.gov.ph</code> / <code>Admin@Malapad2026!</code></div>
+                        <div><strong>Staff:</strong> <code>staff@malapadcogon.gov.ph</code> / <code>Staff@Malapad2026!</code></div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light text-center py-3 border-0">
+                    <a asp-controller="Home" asp-action="Index" class="small text-decoration-none text-muted">
+                        <i class="bi bi-arrow-left me-1"></i> Return to Resident Public Portal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

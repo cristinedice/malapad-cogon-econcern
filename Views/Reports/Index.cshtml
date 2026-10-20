@@ -1,0 +1,290 @@
+@model MalapadCogonEConcern.ViewModels.ReportFilterViewModel
+@using MalapadCogonEConcern.Models.Enums
+@{
+    ViewData["Title"] = "Barangay Concern Analytics & Reports";
+}
+
+<style>
+    @@media print {
+        header, footer, .no-print, .btn, .navbar, form {
+            display: none !important;
+        }
+        .print-only {
+            display: block !important;
+        }
+        body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        .card {
+            border: 1px solid #ddd !important;
+            box-shadow: none !important;
+        }
+    }
+    .print-only {
+        display: none;
+    }
+</style>
+
+<div class="container-fluid py-4 px-lg-5">
+    <!-- Official Print Header (Only visible when printing or in print preview) -->
+    <div class="print-only text-center mb-4">
+        <h6 class="mb-0 text-uppercase">Republic of the Philippines</h6>
+        <h6 class="mb-0 text-uppercase">Province of Capiz &bull; Municipality of Sigma</h6>
+        <h4 class="fw-bold text-uppercase mt-1 mb-1">Barangay Malapad, Cogon</h4>
+        <div class="fw-bold border-bottom pb-2">COMMUNITY CONCERNS &amp; ACTION SUMMARY REPORT</div>
+        <small class="text-muted d-block mt-1">Generated: @DateTime.UtcNow.ToLocalTime().ToString("MMMM dd, yyyy hh:mm tt")</small>
+    </div>
+
+    <!-- Screen Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 no-print">
+        <div>
+            <h3 class="fw-bold text-dark mb-1">
+                <i class="bi bi-file-earmark-bar-graph text-success me-2"></i> Reports &amp; Community Analytics
+            </h3>
+            <p class="text-muted small mb-0">Generate monthly council summaries, analyze recurring issues, and export data</p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a asp-action="ExportCsv" 
+               asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))"
+               asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))"
+               asp-route-categoryId="@Model.CategoryId"
+               asp-route-sitioId="@Model.SitioId"
+               class="btn btn-outline-success btn-sm fw-bold">
+                <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export to CSV / Excel
+            </a>
+            <button class="btn btn-success btn-sm fw-bold" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i> Print Council Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4 bg-white mb-4 no-print">
+        <form method="get" asp-action="Index" class="row g-2 align-items-end">
+            <div class="col-md-3 col-sm-6">
+                <label class="form-label small fw-bold text-muted mb-1">Start Date</label>
+                <input type="date" name="startDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label class="form-label small fw-bold text-muted mb-1">End Date</label>
+                <input type="date" name="endDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label class="form-label small fw-bold text-muted mb-1">Category</label>
+                <select name="categoryId" class="form-select form-select-sm">
+                    <option value="">-- All Categories --</option>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">@cat.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label small fw-bold text-muted mb-1">Sitio / Purok</label>
+                <select name="sitioId" class="form-select form-select-sm">
+                    <option value="">-- All Sitios --</option>
+                    @foreach (var s in Model.Sitios)
+                    {
+                        <option value="@s.Id" selected="@(Model.SitioId == s.Id)">@s.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-1 d-grid">
+                <button type="submit" class="btn btn-success btn-sm fw-bold">
+                    <i class="bi bi-funnel"></i> Apply
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- KPI Metric Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-2 col-sm-4 col-6">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white text-center h-100">
+                <div class="text-muted small fw-semibold">Total Received</div>
+                <h2 class="fw-bold text-dark mb-0">@Model.TotalReceived</h2>
+                <small class="text-muted">In period</small>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 col-6">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white text-center h-100">
+                <div class="text-muted small fw-semibold">Resolved</div>
+                <h2 class="fw-bold text-success mb-0">@Model.TotalResolved</h2>
+                <small class="text-success fw-bold">@Model.ResolutionRate% Rate</small>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 col-6">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white text-center h-100">
+                <div class="text-muted small fw-semibold">Pending / Ongoing</div>
+                <h2 class="fw-bold text-warning mb-0">@Model.TotalPending</h2>
+                <small class="text-muted">Under action</small>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 col-6">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white text-center h-100">
+                <div class="text-muted small fw-semibold">Forwarded to LGU</div>
+                <h2 class="fw-bold text-secondary mb-0">@Model.TotalForwarded</h2>
+                <small class="text-muted">External agencies</small>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 col-6">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white text-center h-100">
+                <div class="text-muted small fw-semibold">Rejected / Misuse</div>
+                <h2 class="fw-bold text-danger mb-0">@Model.TotalRejected</h2>
+                <small class="text-muted">Documented</small>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 col-6">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white text-center h-100">
+                <div class="text-muted small fw-semibold">Avg. Resolution</div>
+                <h2 class="fw-bold text-info mb-0">@(Model.AverageResolutionDays?.ToString("0.0") ?? "N/A")</h2>
+                <small class="text-muted">Days to fix</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breakdown Analytics Row -->
+    <div class="row g-4 mb-4">
+        <!-- Category Breakdown -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                    <i class="bi bi-pie-chart text-success me-2"></i> Breakdown by Category
+                </h5>
+                @if (!Model.CategoryBreakdown.Any())
+                {
+                    <div class="text-muted small text-center py-4">No data available for the selected range.</div>
+                }
+                else
+                {
+                    @foreach (var cat in Model.CategoryBreakdown)
+                    {
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small fw-semibold mb-1">
+                                <span>@cat.Name</span>
+                                <span class="text-muted">@cat.Count report(s) (@cat.Percentage%)</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: @cat.Percentage%;"></div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Sitio / Purok Breakdown -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                    <i class="bi bi-geo-alt text-success me-2"></i> Breakdown by Sitio / Purok
+                </h5>
+                @if (!Model.SitioBreakdown.Any())
+                {
+                    <div class="text-muted small text-center py-4">No data available for the selected range.</div>
+                }
+                else
+                {
+                    @foreach (var s in Model.SitioBreakdown)
+                    {
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small fw-semibold mb-1">
+                                <span>@s.Name</span>
+                                <span class="text-muted">@s.Count report(s) (@s.Percentage%)</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: @s.Percentage%;"></div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Concerns Table -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
+        <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-table me-2 text-success"></i> Detailed Records (@Model.Concerns.Count items)
+            </h6>
+            <span class="badge bg-light text-muted border">Filtered Records</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0 font-size-sm">
+                <thead class="table-light small text-uppercase text-muted">
+                    <tr>
+                        <th class="ps-3">Reference No.</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Sitio / Purok</th>
+                        <th>Title &amp; Landmark</th>
+                        <th>Channel</th>
+                        <th>Status</th>
+                        <th>Assigned Staff</th>
+                        <th class="text-end pe-3">Resolved Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Concerns.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-muted">No records match the selected date range and filters.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.Concerns)
+                        {
+                            <tr>
+                                <td class="ps-3 fw-bold font-monospace">@item.ReferenceNumber</td>
+                                <td class="small text-muted">@item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                                <td>@item.Category?.Name</td>
+                                <td>@item.Sitio?.Name</td>
+                                <td>
+                                    <div class="fw-semibold">@item.Title</div>
+                                    <small class="text-muted">@item.LandmarkOrAddress</small>
+                                </td>
+                                <td><span class="badge bg-light text-secondary border">@item.Channel</span></td>
+                                <td><span class="badge bg-secondary">@item.Status</span></td>
+                                <td class="small">@(item.AssignedToUser?.FullName ?? "—")</td>
+                                <td class="text-end pe-3 small text-muted">
+                                    @(item.ResolvedAt.HasValue ? item.ResolvedAt.Value.ToLocalTime().ToString("yyyy-MM-dd") : "—")
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Official Signature Block (Print-Only) -->
+    <div class="print-only mt-5 pt-4">
+        <div class="row text-center">
+            <div class="col-6">
+                <div class="border-top border-dark mx-4 pt-2">
+                    <strong class="d-block text-uppercase">Barangay Secretary</strong>
+                    <small>Prepared by</small>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="border-top border-dark mx-4 pt-2">
+                    <strong class="d-block text-uppercase">Punong Barangay</strong>
+                    <small>Attested &amp; Approved by</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

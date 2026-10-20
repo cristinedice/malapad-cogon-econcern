@@ -1,0 +1,155 @@
+@model MalapadCogonEConcern.ViewModels.AdminCreateAssistedViewModel
+@using MalapadCogonEConcern.Models.Enums
+@{
+    ViewData["Title"] = "Assisted Walk-In Intake";
+    var categories = ViewBag.Categories as List<MalapadCogonEConcern.Models.Entities.Category> ?? new();
+    var sitios = ViewBag.Sitios as List<MalapadCogonEConcern.Models.Entities.Sitio> ?? new();
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                <div class="p-4 text-white" style="background: linear-gradient(135deg, #0d3813 0%, #1b5e20 100%);">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-warning text-dark rounded-circle p-3 fs-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="bi bi-person-lines-fill"></i>
+                            </div>
+                            <div>
+                                <h4 class="fw-bold mb-0">Assisted Walk-In / Phone Intake Form</h4>
+                                <small class="text-white-50">Encode concerns reported in-person at the Barangay Hall</small>
+                            </div>
+                        </div>
+                        <a asp-action="Concerns" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-arrow-left me-1"></i> Back
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="CreateAssisted" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                        <!-- Intake Channel & Priority -->
+                        <div class="row g-3 mb-4 p-3 bg-light rounded-3 border">
+                            <div class="col-md-6">
+                                <label asp-for="Channel" class="form-label small fw-bold text-dark"></label>
+                                <select asp-for="Channel" class="form-select form-select-sm">
+                                    <option value="@SubmissionChannel.WalkIn">Walk-In (In-Person at Barangay Hall)</option>
+                                    <option value="@SubmissionChannel.PhoneCall">Phone Call / Hotline</option>
+                                    <option value="@SubmissionChannel.Online">Assisted Online</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Priority" class="form-label small fw-bold text-dark"></label>
+                                <select asp-for="Priority" class="form-select form-select-sm">
+                                    <option value="@PriorityLevel.Low">Low</option>
+                                    <option value="@PriorityLevel.Medium" selected>Medium</option>
+                                    <option value="@PriorityLevel.High">High</option>
+                                    <option value="@PriorityLevel.Urgent">Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Complainant Identity -->
+                        <h6 class="fw-bold text-success mb-2">1. Complainant Information</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="ComplainantName" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <input asp-for="ComplainantName" class="form-control" placeholder="Resident Full Name" required />
+                                <span asp-validation-for="ComplainantName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="ComplainantContact" class="form-label small fw-bold text-dark"></label>
+                                <input asp-for="ComplainantContact" class="form-control" placeholder="09XX-XXX-XXXX" />
+                                <span asp-validation-for="ComplainantContact" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- Location & Details -->
+                        <h6 class="fw-bold text-success mb-2">2. Concern Details</h6>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <select asp-for="CategoryId" class="form-select" required>
+                                    <option value="">-- Select Category --</option>
+                                    @foreach (var cat in categories)
+                                    {
+                                        <option value="@cat.Id">@cat.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="SitioId" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <select asp-for="SitioId" class="form-select" required>
+                                    <option value="">-- Select Sitio / Purok --</option>
+                                    @foreach (var s in sitios)
+                                    {
+                                        <option value="@s.Id">@s.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SitioId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="LandmarkOrAddress" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <input asp-for="LandmarkOrAddress" class="form-control" placeholder="Specific location, house number, or nearby landmark" required />
+                                <span asp-validation-for="LandmarkOrAddress" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Title" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <input asp-for="Title" class="form-control" placeholder="Brief Summary of Concern" required />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <textarea asp-for="Description" rows="4" class="form-control" placeholder="Detailed notes transcribed from the resident's narration..." required></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="PhotoAttachment" class="form-label small fw-bold text-dark"></label>
+                                <input asp-for="PhotoAttachment" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                                <small class="text-muted">Optional: Photos taken or provided by the resident.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="VerificationPin" class="form-label small fw-bold text-dark"></label>
+                                <span class="text-danger">*</span>
+                                <input asp-for="VerificationPin" class="form-control" maxlength="4" placeholder="Assign 4-digit tracking PIN (e.g. 1234)" value="1234" required />
+                                <small class="text-muted">Give this PIN to the resident along with their Reference Number.</small>
+                                <span asp-validation-for="VerificationPin" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg py-3 fw-bold shadow-sm">
+                                <i class="bi bi-save me-1"></i> Save and Encode Concern
+                            </button>
+                            <a asp-action="Concerns" class="btn btn-light text-muted">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

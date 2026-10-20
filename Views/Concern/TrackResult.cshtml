@@ -1,0 +1,204 @@
+@model MalapadCogonEConcern.ViewModels.ConcernTrackResultViewModel
+@using MalapadCogonEConcern.Models.Enums
+@{
+    ViewData["Title"] = $"Tracking: {Model.ReferenceNumber}";
+
+    // Calculate stepper active index
+    int stepIndex = Model.CurrentStatus switch
+    {
+        ConcernStatus.Submitted => 1,
+        ConcernStatus.UnderReview => 2,
+        ConcernStatus.Accepted => 3,
+        ConcernStatus.Assigned => 3,
+        ConcernStatus.InProgress => 4,
+        ConcernStatus.Resolved => 5,
+        _ => 2
+    };
+
+    string statusBadgeClass = Model.CurrentStatus switch
+    {
+        ConcernStatus.Submitted => "bg-secondary",
+        ConcernStatus.UnderReview => "bg-info text-dark",
+        ConcernStatus.Accepted => "bg-primary",
+        ConcernStatus.Assigned => "bg-primary",
+        ConcernStatus.InProgress => "bg-warning text-dark",
+        ConcernStatus.Resolved => "bg-success",
+        ConcernStatus.ForwardedToAgency => "bg-dark text-white",
+        ConcernStatus.NeedsMoreInfo => "bg-warning text-dark",
+        ConcernStatus.Rejected => "bg-danger",
+        _ => "bg-secondary"
+    };
+}
+
+<div class="container py-4 py-md-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <!-- Top Navigation / Back -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a asp-controller="Concern" asp-action="Track" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Check Another Concern
+                </a>
+                <button class="btn btn-sm btn-outline-dark" onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i> Print Status Sheet
+                </button>
+            </div>
+
+            <!-- Main Status Card -->
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+                <!-- Header with Status Badge -->
+                <div class="p-4 bg-light border-bottom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                    <div>
+                        <div class="small text-muted text-uppercase fw-bold">Barangay Malapad Cogon e-Concern</div>
+                        <h4 class="fw-bold mb-0 text-dark">
+                            Reference No: <span class="text-success font-monospace">@Model.ReferenceNumber</span>
+                        </h4>
+                    </div>
+                    <div>
+                        <span class="badge @statusBadgeClass fs-6 px-3 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-info-circle me-1"></i> Status: @Model.CurrentStatus
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <!-- Progress Stepper (Only for linear workflow) -->
+                    @if (Model.CurrentStatus != ConcernStatus.Rejected && Model.CurrentStatus != ConcernStatus.ForwardedToAgency)
+                    {
+                        <div class="mb-5">
+                            <h6 class="fw-bold text-muted small text-uppercase mb-3">Progress Stepper</h6>
+                            <div class="d-flex justify-content-between position-relative text-center">
+                                <div class="position-absolute top-50 start-0 translate-middle-y w-100 bg-secondary bg-opacity-25" style="height: 4px; z-index: 1;"></div>
+                                <div class="position-absolute top-50 start-0 translate-middle-y bg-success" style="height: 4px; z-index: 1; width: @((stepIndex - 1) * 25)%;"></div>
+
+                                <!-- Step 1 -->
+                                <div class="position-relative" style="z-index: 2;">
+                                    <div class="rounded-circle @(stepIndex >= 1 ? "bg-success text-white" : "bg-light border text-muted") d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px;">
+                                        <i class="bi bi-check-lg"></i>
+                                    </div>
+                                    <div class="small fw-semibold mt-1">Submitted</div>
+                                </div>
+
+                                <!-- Step 2 -->
+                                <div class="position-relative" style="z-index: 2;">
+                                    <div class="rounded-circle @(stepIndex >= 2 ? "bg-success text-white" : "bg-light border text-muted") d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px;">
+                                        <i class="bi @(stepIndex > 2 ? "bi-check-lg" : "bi-hourglass-split")"></i>
+                                    </div>
+                                    <div class="small fw-semibold mt-1">Under Review</div>
+                                </div>
+
+                                <!-- Step 3 -->
+                                <div class="position-relative" style="z-index: 2;">
+                                    <div class="rounded-circle @(stepIndex >= 3 ? "bg-success text-white" : "bg-light border text-muted") d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px;">
+                                        <i class="bi @(stepIndex > 3 ? "bi-check-lg" : "bi-person-check")"></i>
+                                    </div>
+                                    <div class="small fw-semibold mt-1">Accepted</div>
+                                </div>
+
+                                <!-- Step 4 -->
+                                <div class="position-relative" style="z-index: 2;">
+                                    <div class="rounded-circle @(stepIndex >= 4 ? "bg-success text-white" : "bg-light border text-muted") d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px;">
+                                        <i class="bi @(stepIndex > 4 ? "bi-check-lg" : "bi-tools")"></i>
+                                    </div>
+                                    <div class="small fw-semibold mt-1">In Progress</div>
+                                </div>
+
+                                <!-- Step 5 -->
+                                <div class="position-relative" style="z-index: 2;">
+                                    <div class="rounded-circle @(stepIndex >= 5 ? "bg-success text-white" : "bg-light border text-muted") d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px;">
+                                        <i class="bi bi-flag-fill"></i>
+                                    </div>
+                                    <div class="small fw-semibold mt-1">Resolved</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (Model.CurrentStatus == ConcernStatus.ForwardedToAgency)
+                    {
+                        <div class="alert alert-dark d-flex align-items-center gap-3 rounded-3 mb-4">
+                            <i class="bi bi-box-arrow-up-right fs-2"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Gintugyan sa Kaangay nga Ahensya (Forwarded)</h6>
+                                <p class="small mb-0">
+                                    Ini nga concern opisyal nga gintugyan sa: <strong>@Model.ForwardedToAgency</strong>. <br>
+                                    @Model.ForwardedRemarks
+                                </p>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Concern Details -->
+                    <div class="bg-light p-4 rounded-4 mb-4">
+                        <h5 class="fw-bold text-dark mb-2">@Model.Title</h5>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge bg-white text-dark border"><i class="bi @Model.CategoryIcon me-1"></i> @Model.CategoryName</span>
+                            <span class="badge bg-white text-dark border"><i class="bi bi-geo-alt me-1"></i> @Model.SitioName</span>
+                            <span class="badge bg-white text-dark border"><i class="bi bi-calendar3 me-1"></i> @Model.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")</span>
+                        </div>
+
+                        <p class="mb-2 text-secondary">
+                            <strong>Lugar / Landmark:</strong> @Model.LandmarkOrAddress
+                        </p>
+                        <p class="mb-0 text-secondary">
+                            <strong>Kabilugan nga Detalye:</strong><br>
+                            @Model.Description
+                        </p>
+                    </div>
+
+                    <!-- Photos Section -->
+                    <div class="row g-3 mb-4">
+                        @if (!string.IsNullOrEmpty(Model.SubmissionPhotoUrl))
+                        {
+                            <div class="col-md-6">
+                                <div class="card border rounded-3 p-2 bg-light text-center h-100">
+                                    <small class="fw-bold text-muted mb-2 d-block">Litrato sang Pagsumite (Original Evidence)</small>
+                                    <a href="@Model.SubmissionPhotoUrl" target="_blank">
+                                        <img src="@Model.SubmissionPhotoUrl" alt="Submission Photo" class="img-fluid rounded" style="max-height: 220px; object-fit: cover;" />
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.ResolutionPhotoUrl))
+                        {
+                            <div class="col-md-6">
+                                <div class="card border-success border-2 rounded-3 p-2 bg-light text-center h-100">
+                                    <small class="fw-bold text-success mb-2 d-block"><i class="bi bi-patch-check-fill me-1"></i> Pruweba sang Pagka-Resolba (Resolution Proof)</small>
+                                    <a href="@Model.ResolutionPhotoUrl" target="_blank">
+                                        <img src="@Model.ResolutionPhotoUrl" alt="Resolution Proof" class="img-fluid rounded" style="max-height: 220px; object-fit: cover;" />
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Official Public Action Timeline -->
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-clock-history text-success me-1"></i> Opisyal nga Kasaysayan sang Pag-aksyon (Action Timeline)
+                    </h6>
+
+                    <div class="border-start border-3 border-success ps-3 ms-2 mb-4">
+                        @foreach (var eventItem in Model.Timeline)
+                        {
+                            <div class="mb-3 position-relative">
+                                <div class="small text-muted">
+                                    @eventItem.Timestamp.ToLocalTime().ToString("MMM dd, yyyy - hh:mm tt") &bull;
+                                    <span class="badge bg-light text-dark border">@eventItem.Status</span>
+                                    <span class="text-secondary fst-italic">(@eventItem.ChangedByPosition)</span>
+                                </div>
+                                <div class="fw-semibold text-dark mt-1">
+                                    @(string.IsNullOrEmpty(eventItem.PublicRemarks) ? "Status updated by barangay personnel." : eventItem.PublicRemarks)
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="text-center pt-3 border-top">
+                        <small class="text-muted">
+                            <i class="bi bi-shield-lock me-1"></i> Protected under RA 10173. Complainant identity is kept confidential.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

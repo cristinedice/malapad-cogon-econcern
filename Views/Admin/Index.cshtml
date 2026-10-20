@@ -1,0 +1,201 @@
+@model MalapadCogonEConcern.ViewModels.AdminDashboardViewModel
+@using MalapadCogonEConcern.Models.Enums
+@{
+    ViewData["Title"] = "Barangay Operations Dashboard";
+}
+
+<div class="container-fluid py-4 px-lg-5">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1">
+                <i class="bi bi-speedometer2 text-success me-2"></i> Barangay Operations Dashboard
+            </h3>
+            <p class="text-muted small mb-0">Malapad Cogon e-Concern Management &amp; Tracking Center</p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a asp-action="CreateAssisted" class="btn btn-warning text-dark fw-bold btn-sm shadow-sm">
+                <i class="bi bi-person-plus me-1"></i> Walk-In Intake
+            </a>
+            <a asp-action="Concerns" class="btn btn-success btn-sm fw-bold shadow-sm">
+                <i class="bi bi-card-checklist me-1"></i> View All Concerns
+            </a>
+            <button class="btn btn-outline-secondary btn-sm" onclick="location.reload();">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- KPI Metric Cards (Interactive Filters) -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-2">
+            <a asp-action="Concerns" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 card-hover">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-semibold">Total Reports</div>
+                            <h3 class="fw-bold text-dark mb-0">@Model.TotalConcerns</h3>
+                        </div>
+                        <div class="p-2 bg-light rounded text-primary fs-4"><i class="bi bi-folder2-open"></i></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <a asp-action="Concerns" asp-route-status="@((int)ConcernStatus.UnderReview)" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 card-hover">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-semibold">Under Review</div>
+                            <h3 class="fw-bold text-info mb-0">@Model.UnderReviewConcerns</h3>
+                        </div>
+                        <div class="p-2 bg-info bg-opacity-10 rounded text-info fs-4"><i class="bi bi-hourglass-split"></i></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <a asp-action="Concerns" asp-route-status="@((int)ConcernStatus.InProgress)" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 card-hover">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-semibold">In Progress</div>
+                            <h3 class="fw-bold text-warning mb-0">@Model.InProgressConcerns</h3>
+                        </div>
+                        <div class="p-2 bg-warning bg-opacity-10 rounded text-warning fs-4"><i class="bi bi-tools"></i></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <a asp-action="Concerns" asp-route-status="@((int)ConcernStatus.ForwardedToAgency)" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 card-hover">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-semibold">Forwarded</div>
+                            <h3 class="fw-bold text-secondary mb-0">@Model.ForwardedConcerns</h3>
+                        </div>
+                        <div class="p-2 bg-secondary bg-opacity-10 rounded text-secondary fs-4"><i class="bi bi-box-arrow-up-right"></i></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <a asp-action="Concerns" asp-route-status="@((int)ConcernStatus.Resolved)" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 card-hover">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-semibold">Resolved</div>
+                            <h3 class="fw-bold text-success mb-0">@Model.ResolvedConcerns</h3>
+                        </div>
+                        <div class="p-2 bg-success bg-opacity-10 rounded text-success fs-4"><i class="bi bi-check2-circle"></i></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <a asp-action="Concerns" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 card-hover">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small fw-semibold">Overdue (>7 Days)</div>
+                            <h3 class="fw-bold text-danger mb-0">@Model.LongPendingConcerns</h3>
+                        </div>
+                        <div class="p-2 bg-danger bg-opacity-10 rounded text-danger fs-4"><i class="bi bi-clock-history"></i></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Submissions Table -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+        <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-clock-history me-2 text-success"></i> Recent Community Submissions
+            </h5>
+            <a asp-action="Concerns" class="btn btn-sm btn-outline-success">View All</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-uppercase text-muted">
+                    <tr>
+                        <th class="ps-4">Reference No.</th>
+                        <th>Category</th>
+                        <th>Sitio / Purok</th>
+                        <th>Title &amp; Landmark</th>
+                        <th>Channel</th>
+                        <th>Status</th>
+                        <th>Date Submitted</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.RecentConcerns.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                                <div>No community concerns recorded yet.</div>
+                                <small>New submissions will appear here automatically.</small>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.RecentConcerns)
+                        {
+                            string badgeClass = item.Status switch
+                            {
+                                ConcernStatus.Submitted => "bg-secondary",
+                                ConcernStatus.UnderReview => "bg-info text-dark",
+                                ConcernStatus.Accepted => "bg-primary",
+                                ConcernStatus.Assigned => "bg-primary",
+                                ConcernStatus.InProgress => "bg-warning text-dark",
+                                ConcernStatus.Resolved => "bg-success",
+                                ConcernStatus.ForwardedToAgency => "bg-dark text-white",
+                                ConcernStatus.NeedsMoreInfo => "bg-warning text-dark",
+                                ConcernStatus.Rejected => "bg-danger",
+                                _ => "bg-secondary"
+                            };
+
+                            <tr>
+                                <td class="ps-4 fw-bold font-monospace">@item.ReferenceNumber</td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        <i class="bi @item.Category?.IconClass me-1"></i> @item.Category?.Name
+                                    </span>
+                                </td>
+                                <td>@item.Sitio?.Name</td>
+                                <td>
+                                    <div class="fw-semibold">@item.Title</div>
+                                    <small class="text-muted"><i class="bi bi-geo-alt"></i> @item.LandmarkOrAddress</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-secondary border">@item.Channel</span>
+                                </td>
+                                <td>
+                                    <span class="badge @badgeClass">@item.Status</span>
+                                </td>
+                                <td class="small text-muted">
+                                    @item.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-gear me-1"></i> Manage
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+## Build & Binary Artifacts
+bin/
+obj/
+*.dll
+*.pdb
+
+## User / IDE settings
+.vs/
+.vscode/
+*.user
+*.suo
+
+## Database & Backups
+*.db
+*.db-wal
+*.db-shm
+backups/
+
+## OS Files
+Thumbs.db
+.DS_Store

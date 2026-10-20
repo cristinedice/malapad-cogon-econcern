@@ -1,0 +1,79 @@
+@model MalapadCogonEConcern.ViewModels.ConcernConfirmationViewModel
+@{
+    ViewData["Title"] = "Submission Confirmed - Malapad Cogon e-Concern";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white text-center">
+                <!-- Success Header -->
+                <div class="p-4 text-white" style="background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);">
+                    <div class="rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 72px; height: 72px;">
+                        <i class="bi bi-check-lg fs-1 fw-bold"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">Mabinatun-on nga Nabaton!</h3>
+                    <p class="text-white-50 small mb-0">Ang imo reklamo opisyal na nga nalista sa sistema sang Barangay Malapad Cogon.</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <!-- Prominent Reference Number Box -->
+                    <div class="p-4 bg-light rounded-4 border mb-4">
+                        <span class="small text-muted text-uppercase fw-bold letter-spacing-1 d-block mb-1">Imo Reference Number</span>
+                        <div class="display-6 fw-bold text-success font-monospace mb-2" id="refNoText">@Model.ReferenceNumber</div>
+                        <button class="btn btn-sm btn-outline-success" onclick="copyRefNo()">
+                            <i class="bi bi-clipboard me-1"></i> I-kopya ang Reference Number
+                        </button>
+                    </div>
+
+                    <!-- Summary Info -->
+                    <div class="row g-2 text-start small mb-4">
+                        <div class="col-6 text-muted">Ulo sang Reklamo:</div>
+                        <div class="col-6 fw-bold text-end">@Model.Title</div>
+
+                        <div class="col-6 text-muted">Kategorya:</div>
+                        <div class="col-6 fw-bold text-end">@Model.CategoryName</div>
+
+                        <div class="col-6 text-muted">Sitio / Purok:</div>
+                        <div class="col-6 fw-bold text-end">@Model.SitioName</div>
+
+                        <div class="col-6 text-muted">Petsa kag Oras:</div>
+                        <div class="col-6 fw-bold text-end">@Model.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")</div>
+
+                        <div class="col-6 text-muted">Imo 4-Digit PIN:</div>
+                        <div class="col-6 fw-bold text-success text-end font-monospace">@Model.VerificationPin</div>
+                    </div>
+
+                    <div class="alert alert-warning py-2 small text-start mb-4">
+                        <i class="bi bi-exclamation-circle-fill me-1"></i>
+                        <strong>Importante:</strong> Palihog <strong>i-screenshot</strong> ukon <strong>isulat</strong> ang imo Reference Number kag PIN. Kinahanglan mo ini agud mabal-an ang aksyon sang barangay.
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Concern" asp-action="Track" asp-route-refNo="@Model.ReferenceNumber" class="btn btn-success py-3 fw-bold">
+                            <i class="bi bi-search me-1"></i> I-check ang Status Karon
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="window.print()">
+                            <i class="bi bi-printer me-1"></i> I-print / I-save bilang PDF
+                        </button>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-link text-muted small">
+                            Magbalik sa Home Page
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copyRefNo() {
+            const text = document.getElementById('refNoText').innerText;
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Nakopya na ang Reference Number: ' + text);
+            });
+        }
+    </script>
+}

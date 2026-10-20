@@ -1,0 +1,13 @@
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/backups
+**/*.db
+**/*.db-wal
+**/*.db-shm
+Dockerfile
+README.md
+backup.ps1
