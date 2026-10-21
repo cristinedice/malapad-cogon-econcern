@@ -721,3 +721,113 @@ body {
     box-shadow: 0 2px 8px rgba(11, 87, 145, 0.25);
 }
 
+/* ==============================================================================
+   MOBILE & BUDGET PHONE OPTIMIZATION (Android & iOS)
+   Ultra-responsive, fast loading on 3G/4G, touch-friendly targets
+   ============================================================================== */
+
+@media (max-width: 768px) {
+    /* Prevent iOS & Android browser auto-zoom on input focus */
+    input, select, textarea, .form-control, .form-select, .marikina-input-field {
+        font-size: 16px !important;
+    }
+
+    /* Adjust curved top blue band height for mobile view */
+    .marikina-top-blue-band {
+        height: 250px;
+        border-bottom-left-radius: 24px;
+        border-bottom-right-radius: 24px;
+    }
+
+    .marikina-main-content {
+        padding-top: 16px;
+        padding-bottom: 40px;
+    }
+
+    /* Container gutters comfortable on narrow screens (e.g. 360px phones) */
+    .container-fluid {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    /* Touch-friendly buttons (min 44px height for thumbs) */
+    .btn {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Full-width action buttons on mobile cards when needed */
+    .mobile-w-100 {
+        width: 100% !important;
+    }
+
+    /* Stat cards on mobile: 2 columns with clean compact padding */
+    .dashboard-stat-card {
+        padding: 14px 16px;
+        min-height: 95px;
+    }
+
+    .stat-card-num {
+        font-size: 1.8rem;
+    }
+
+    .stat-card-label {
+        font-size: 0.8rem;
+    }
+
+    /* Admin KPI cards on mobile */
+    .marikina-kpi-card {
+        padding: 14px 16px;
+    }
+
+    .marikina-kpi-card .kpi-num {
+        font-size: 1.6rem;
+    }
+
+    /* Smooth touch swipe for tables */
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+        border-radius: 12px;
+    }
+
+    /* Profile Maroon card mobile padding */
+    .profile-maroon-card {
+        padding: 18px 20px;
+    }
+
+    /* Wave footer scaling */
+    .bottom-wave-img {
+        height: 140px;
+    }
+
+    .bottom-overlay-badge .text-place {
+        font-size: 1.35rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .marikina-top-blue-band {
+        height: 220px;
+    }
+
+    /* Filter pills horizontal scrolling */
+    .filter-pills-row {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px;
+    }
+
+    .filter-pill {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 6px 16px;
+        font-size: 0.82rem;
+    }
+}
+
+
