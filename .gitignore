@@ -19,3 +19,4 @@ backups/
 ## OS Files
 Thumbs.db
 .DS_Store
+*.exe

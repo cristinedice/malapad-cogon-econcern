@@ -13,6 +13,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Cristine Dice" />
+    <meta name="description" content="Community Reporting and Tracking System for Barangay Malapad, Cogon, Sigma, Capiz. Designed and Developed by Cristine Dice." />
     <title>@ViewData["Title"] - Malapad Cogon e-Concern</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -102,6 +104,12 @@
                                 }
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
+                                    <a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#aboutDeveloperModal">
+                                        <i class="bi bi-info-circle me-2 brand-blue-text"></i> About System &amp; Developer
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
                                     <form asp-controller="Account" asp-action="Logout" method="post">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="dropdown-item text-danger py-2">
@@ -114,9 +122,14 @@
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-marikina-blue px-3 py-1">
-                            Sign In
-                        </a>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-sm btn-link text-decoration-none text-muted" data-bs-toggle="modal" data-bs-target="#aboutDeveloperModal">
+                                <i class="bi bi-info-circle"></i> About
+                            </button>
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-marikina-blue px-3 py-1">
+                                Sign In
+                            </a>
+                        </div>
                     }
                 </div>
             </div>
@@ -127,6 +140,77 @@
     <main role="main" class="flex-grow-1">
         @RenderBody()
     </main>
+
+    <!-- System Sub-Footer (Visible on all inner pages) -->
+    <footer class="py-3 mt-auto bg-white border-top text-muted small no-print">
+        <div class="container-fluid px-lg-5">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                <div>
+                    &copy; @DateTime.UtcNow.Year <strong>Barangay Malapad Cogon</strong>, Sigma, Capiz &bull; e-Concern Platform
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span>Designed &amp; Developed by <strong class="brand-blue-text">Cristine Dice</strong></span>
+                    <button type="button" class="btn btn-sm btn-light brand-blue-text border py-0 px-2 fw-semibold shadow-sm" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#aboutDeveloperModal">
+                        <i class="bi bi-code-slash me-1"></i> Developer Info
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal: About System & Developer Ownership -->
+    <div class="modal fade" id="aboutDeveloperModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold brand-blue-text">
+                        <i class="bi bi-shield-check me-2"></i> System &amp; Developer Profile
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <img src="~/images/malapad-cogon-seal.svg" alt="Seal" style="width: 72px; height: 72px;" class="mb-2" />
+                        <h5 class="fw-bold brand-blue-text mb-0">Malapad Cogon e-Concern</h5>
+                        <small class="text-muted">Community Reporting &amp; Incident Tracking Platform</small>
+                        <div class="mt-2">
+                            <span class="badge bg-light brand-blue-text border px-3 py-1">Version 1.0 (2026 Edition)</span>
+                        </div>
+                    </div>
+
+                    <!-- Developer Ownership Card -->
+                    <div class="card border-0 rounded-4 p-3 mb-3 shadow-sm" style="background: linear-gradient(135deg, #f1f7fc 0%, #e8f3fa 100%); border-left: 5px solid #0b5791 !important;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" style="width: 50px; height: 50px; background-color: #0b5791; font-weight: 800; font-size: 1.25rem;">
+                                CD
+                            </div>
+                            <div>
+                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Lead Software Architect &amp; Developer</small>
+                                <h5 class="fw-bold brand-blue-text mb-0">Cristine Dice</h5>
+                                <small class="text-secondary fw-semibold">Systems Developer &bull; Project Author &amp; Owner</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="small text-muted mb-3" style="line-height: 1.5;">
+                        This digital system was custom-designed and engineered by <strong>Cristine Dice</strong> for <strong>Barangay Malapad, Cogon, Municipality of Sigma, Capiz</strong> to streamline public service delivery, community grievance recording, and council analytics.
+                    </p>
+
+                    <div class="p-3 bg-light rounded-3 small border">
+                        <div class="row g-2">
+                            <div class="col-6"><strong>Backend:</strong> ASP.NET Core (.NET 8)</div>
+                            <div class="col-6"><strong>Frontend:</strong> Responsive MVC &amp; Bootstrap</div>
+                            <div class="col-6"><strong>Database:</strong> SQLite / EF Core 8</div>
+                            <div class="col-6"><strong>Security:</strong> RA 10173 Compliant</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-sm btn-marikina-blue px-4" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
