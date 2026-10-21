@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 using MalapadCogonEConcern.Data;
 using MalapadCogonEConcern.Models.Entities;
 using MalapadCogonEConcern.Services;
@@ -69,6 +70,11 @@ using (var scope = app.Services.CreateScope())
 }
 
 // 6. HTTP Pipeline
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
