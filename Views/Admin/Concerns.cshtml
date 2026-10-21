@@ -4,189 +4,212 @@
     ViewData["Title"] = "Manage Community Concerns";
 }
 
-<div class="container-fluid py-4 px-lg-5">
-    <!-- Header -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
-        <div>
-            <h3 class="fw-bold text-dark mb-1">
-                <i class="bi bi-card-checklist text-success me-2"></i> All Community Concerns
-            </h3>
-            <p class="text-muted small mb-0">Review, assign, track, and resolve community reports</p>
-        </div>
-        <div class="d-flex gap-2 mt-3 mt-md-0">
-            <a asp-action="CreateAssisted" class="btn btn-warning text-dark fw-bold btn-sm shadow-sm">
-                <i class="bi bi-person-plus me-1"></i> Walk-In Assisted Intake
-            </a>
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-speedometer2 me-1"></i> Dashboard
-            </a>
-        </div>
-    </div>
+<div class="marikina-page-wrapper position-relative">
+    <!-- Signature Marikina Curved Blue Top Band -->
+    <div class="marikina-top-blue-band"></div>
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show small" role="alert">
-            <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+    <div class="container-fluid px-lg-5 marikina-main-content">
+        <div class="row g-4">
+            <!-- LEFT: Floating Sidebar (Docked at Top-Left) -->
+            <div class="col-lg-3 col-md-4">
+                <partial name="_MarikinaSidebar" model='"AllConcerns"' />
+            </div>
 
-    <!-- Filter Card -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white p-3 p-md-4">
-        <form method="get" asp-action="Concerns" class="row g-2 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted mb-1">Keyword Search</label>
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Ref No, title, complainant..." />
+            <!-- RIGHT: Concerns Listing & Search -->
+            <div class="col-lg-9 col-md-8">
+                <!-- Header in Blue Hero Section -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-white brand-blue-text fw-bold text-uppercase px-2 py-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                                <i class="bi bi-card-checklist me-1"></i> Operations Records
+                            </span>
+                        </div>
+                        <h3 class="fw-bold text-white mb-0 text-uppercase" style="letter-spacing: 0.5px;">
+                            All Community Concerns
+                        </h3>
+                        <small class="text-white-50 text-uppercase fw-semibold" style="letter-spacing: 0.5px;">
+                            Review, assign, track, and resolve community reports
+                        </small>
+                    </div>
+                    <div class="d-flex gap-2 mt-3 mt-md-0">
+                        <a asp-action="CreateAssisted" class="btn btn-marikina-orange fw-bold btn-sm shadow-sm px-3 py-2">
+                            <i class="bi bi-person-plus-fill me-1"></i> Walk-In Intake
+                        </a>
+                        <a asp-action="Index" class="btn btn-light brand-blue-text fw-bold btn-sm shadow-sm px-3 py-2">
+                            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                        </a>
+                    </div>
+                </div>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show small rounded-3 shadow-sm mb-4" role="alert">
+                        <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white p-3 p-md-4">
+                    <form method="get" asp-action="Concerns" class="row g-2 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-1 text-uppercase" style="font-size: 0.74rem; letter-spacing: 0.4px;">Keyword Search</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                <input type="text" name="search" value="@Model.Search" class="form-control rounded-end-3" placeholder="Ref No, title, complainant..." />
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-6">
+                            <label class="form-label small fw-bold text-muted mb-1 text-uppercase" style="font-size: 0.74rem; letter-spacing: 0.4px;">Status</label>
+                            <select name="status" class="form-select form-select-sm rounded-3">
+                                <option value="">-- All Statuses --</option>
+                                @foreach (ConcernStatus st in Enum.GetValues(typeof(ConcernStatus)))
+                                {
+                                    <option value="@((int)st)" selected="@(Model.Status == st)">@st</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 col-6">
+                            <label class="form-label small fw-bold text-muted mb-1 text-uppercase" style="font-size: 0.74rem; letter-spacing: 0.4px;">Category</label>
+                            <select name="categoryId" class="form-select form-select-sm rounded-3">
+                                <option value="">-- All Categories --</option>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">@cat.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 col-6">
+                            <label class="form-label small fw-bold text-muted mb-1 text-uppercase" style="font-size: 0.74rem; letter-spacing: 0.4px;">Sitio / Purok</label>
+                            <select name="sitioId" class="form-select form-select-sm rounded-3">
+                                <option value="">-- All Sitios --</option>
+                                @foreach (var s in Model.Sitios)
+                                {
+                                    <option value="@s.Id" selected="@(Model.SitioId == s.Id)">@s.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 col-6">
+                            <label class="form-label small fw-bold text-muted mb-1 text-uppercase" style="font-size: 0.74rem; letter-spacing: 0.4px;">Assigned Staff</label>
+                            <select name="assignedToUserId" class="form-select form-select-sm rounded-3">
+                                <option value="">-- All Personnel --</option>
+                                @foreach (var staff in Model.StaffUsers)
+                                {
+                                    <option value="@staff.Id" selected="@(Model.AssignedToUserId == staff.Id)">@staff.FullName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-1 d-grid">
+                            <button type="submit" class="btn btn-marikina-blue btn-sm fw-bold">
+                                <i class="bi bi-funnel"></i> Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Concerns Table Card -->
+                <div class="marikina-table-card mb-4">
+                    <div class="marikina-table-header">
+                        <span class="small fw-bold text-muted">Showing <strong>@Model.Concerns.Count</strong> community record(s)</span>
+                        <a asp-action="Concerns" class="btn btn-link btn-sm text-decoration-none brand-blue-text fw-bold">Reset Filters</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table marikina-table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Reference No.</th>
+                                    <th>Category</th>
+                                    <th>Sitio</th>
+                                    <th>Title &amp; Complainant</th>
+                                    <th>Channel</th>
+                                    <th>Assigned To</th>
+                                    <th>Status</th>
+                                    <th>Date Submitted</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.Concerns.Any())
+                                {
+                                    <tr>
+                                        <td colspan="9" class="text-center py-5 text-muted">
+                                            <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                                            <div class="fw-bold">No records match the selected criteria.</div>
+                                            <small>Try clearing or broadening your search filters.</small>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @foreach (var item in Model.Concerns)
+                                    {
+                                        string statusBadge = item.Status switch
+                                        {
+                                            ConcernStatus.Submitted => "badge-marikina-new",
+                                            ConcernStatus.UnderReview => "badge-marikina-review",
+                                            ConcernStatus.Accepted => "badge-marikina-progress",
+                                            ConcernStatus.Assigned => "badge-marikina-progress",
+                                            ConcernStatus.InProgress => "badge-marikina-progress",
+                                            ConcernStatus.Resolved => "badge-marikina-resolved",
+                                            ConcernStatus.ForwardedToAgency => "badge-marikina-forwarded",
+                                            ConcernStatus.NeedsMoreInfo => "badge-marikina-review",
+                                            ConcernStatus.Rejected => "badge-marikina-rejected",
+                                            _ => "badge-marikina-new"
+                                        };
+
+                                        <tr>
+                                            <td class="fw-bold font-monospace brand-orange-text">@item.ReferenceNumber</td>
+                                            <td>
+                                                <span class="badge bg-light text-dark border">
+                                                    <i class="bi @item.Category?.IconClass brand-blue-text me-1"></i> @item.Category?.Name
+                                                </span>
+                                            </td>
+                                            <td class="fw-semibold text-secondary">@item.Sitio?.Name</td>
+                                            <td>
+                                                <div class="fw-bold text-dark">@item.Title</div>
+                                                <small class="text-muted">
+                                                    Complainant: @(string.IsNullOrEmpty(item.ComplainantName) ? "Anonymous / Online" : item.ComplainantName)
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <span class="badge-marikina-channel">@item.Channel</span>
+                                            </td>
+                                            <td>
+                                                @if (item.AssignedToUser != null)
+                                                {
+                                                    <span class="small fw-semibold text-dark"><i class="bi bi-person-badge brand-blue-text me-1"></i> @item.AssignedToUser.FullName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="small text-muted fst-italic">Unassigned</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="@statusBadge">@item.Status</span>
+                                            </td>
+                                            <td class="small text-muted">
+                                                @item.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">
+                                                    <i class="bi bi-gear me-1"></i> Manage
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-
-            <div class="col-md-2 col-6">
-                <label class="form-label small fw-bold text-muted mb-1">Status</label>
-                <select name="status" class="form-select form-select-sm">
-                    <option value="">-- All Statuses --</option>
-                    @foreach (ConcernStatus st in Enum.GetValues(typeof(ConcernStatus)))
-                    {
-                        <option value="@((int)st)" selected="@(Model.Status == st)">@st</option>
-                    }
-                </select>
-            </div>
-
-            <div class="col-md-2 col-6">
-                <label class="form-label small fw-bold text-muted mb-1">Category</label>
-                <select name="categoryId" class="form-select form-select-sm">
-                    <option value="">-- All Categories --</option>
-                    @foreach (var cat in Model.Categories)
-                    {
-                        <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">@cat.Name</option>
-                    }
-                </select>
-            </div>
-
-            <div class="col-md-2 col-6">
-                <label class="form-label small fw-bold text-muted mb-1">Sitio / Purok</label>
-                <select name="sitioId" class="form-select form-select-sm">
-                    <option value="">-- All Sitios --</option>
-                    @foreach (var s in Model.Sitios)
-                    {
-                        <option value="@s.Id" selected="@(Model.SitioId == s.Id)">@s.Name</option>
-                    }
-                </select>
-            </div>
-
-            <div class="col-md-2 col-6">
-                <label class="form-label small fw-bold text-muted mb-1">Assigned Staff</label>
-                <select name="assignedToUserId" class="form-select form-select-sm">
-                    <option value="">-- All Personnel --</option>
-                    @foreach (var staff in Model.StaffUsers)
-                    {
-                        <option value="@staff.Id" selected="@(Model.AssignedToUserId == staff.Id)">@staff.FullName</option>
-                    }
-                </select>
-            </div>
-
-            <div class="col-md-1 d-grid">
-                <button type="submit" class="btn btn-success btn-sm fw-bold">
-                    <i class="bi bi-funnel"></i> Filter
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Concerns Table Card -->
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
-        <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
-            <span class="small fw-bold text-muted">Showing <strong>@Model.Concerns.Count</strong> community record(s)</span>
-            <a asp-action="Concerns" class="btn btn-link btn-sm text-decoration-none text-muted">Reset Filters</a>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light small text-uppercase text-muted">
-                    <tr>
-                        <th class="ps-4">Reference No.</th>
-                        <th>Category</th>
-                        <th>Sitio</th>
-                        <th>Title &amp; Complainant</th>
-                        <th>Channel</th>
-                        <th>Assigned To</th>
-                        <th>Status</th>
-                        <th>Date Submitted</th>
-                        <th class="text-end pe-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (!Model.Concerns.Any())
-                    {
-                        <tr>
-                            <td colspan="9" class="text-center py-5 text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
-                                <div>No records match the selected criteria.</div>
-                            </td>
-                        </tr>
-                    }
-                    else
-                    {
-                        @foreach (var item in Model.Concerns)
-                        {
-                            string badgeClass = item.Status switch
-                            {
-                                ConcernStatus.Submitted => "bg-secondary",
-                                ConcernStatus.UnderReview => "bg-info text-dark",
-                                ConcernStatus.Accepted => "bg-primary",
-                                ConcernStatus.Assigned => "bg-primary",
-                                ConcernStatus.InProgress => "bg-warning text-dark",
-                                ConcernStatus.Resolved => "bg-success",
-                                ConcernStatus.ForwardedToAgency => "bg-dark text-white",
-                                ConcernStatus.NeedsMoreInfo => "bg-warning text-dark",
-                                ConcernStatus.Rejected => "bg-danger",
-                                _ => "bg-secondary"
-                            };
-
-                            <tr>
-                                <td class="ps-4 fw-bold font-monospace">@item.ReferenceNumber</td>
-                                <td>
-                                    <span class="badge bg-light text-dark border">
-                                        <i class="bi @item.Category?.IconClass me-1"></i> @item.Category?.Name
-                                    </span>
-                                </td>
-                                <td>@item.Sitio?.Name</td>
-                                <td>
-                                    <div class="fw-bold text-dark">@item.Title</div>
-                                    <small class="text-muted">
-                                        Complainant: @(string.IsNullOrEmpty(item.ComplainantName) ? "Anonymous / Online" : item.ComplainantName)
-                                    </small>
-                                </td>
-                                <td>
-                                    <span class="badge bg-light text-secondary border">@item.Channel</span>
-                                </td>
-                                <td>
-                                    @if (item.AssignedToUser != null)
-                                    {
-                                        <span class="small fw-semibold text-dark"><i class="bi bi-person-badge me-1"></i> @item.AssignedToUser.FullName</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="small text-muted fst-italic">Unassigned</span>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="badge @badgeClass">@item.Status</span>
-                                </td>
-                                <td class="small text-muted">
-                                    @item.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")
-                                </td>
-                                <td class="text-end pe-4">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">
-                                        <i class="bi bi-gear me-1"></i> Manage
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
         </div>
     </div>
 </div>

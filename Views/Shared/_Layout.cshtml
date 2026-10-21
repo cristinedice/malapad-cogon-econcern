@@ -52,37 +52,50 @@
                                 </li>
                                 <li>
                                     <a class="dropdown-item py-2" asp-controller="Home" asp-action="Dashboard">
-                                        <i class="bi bi-house me-2 text-primary"></i> Home Dashboard
+                                        <i class="bi bi-house-door-fill me-2 brand-blue-text"></i> Home Dashboard
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item py-2" asp-controller="Concern" asp-action="SelectCategory">
-                                        <i class="bi bi-send me-2 text-success"></i> Submit Concern
+                                        <i class="bi bi-send-fill me-2 brand-orange-text"></i> Submit Concern
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item py-2" asp-controller="Concern" asp-action="MyConcerns">
-                                        <i class="bi bi-chat-dots me-2 text-info"></i> My Concern
+                                        <i class="bi bi-chat-dots-fill me-2 brand-blue-text"></i> My Concern
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" asp-controller="Account" asp-action="Profile">
+                                        <i class="bi bi-person-fill me-2 brand-blue-text"></i> Profile
                                     </a>
                                 </li>
                                 @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                                 {
                                     <li><hr class="dropdown-divider"></li>
+                                    <li class="px-3 py-1">
+                                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">Official Portal</small>
+                                    </li>
                                     <li>
                                         <a class="dropdown-item py-2" asp-controller="Admin" asp-action="Index">
-                                            <i class="bi bi-speedometer2 me-2 text-warning"></i> Admin Operations
+                                            <i class="bi bi-speedometer2 me-2 brand-blue-text"></i> Admin Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" asp-controller="Admin" asp-action="Concerns">
+                                            <i class="bi bi-card-checklist me-2 brand-blue-text"></i> All Concerns
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item py-2" asp-controller="Reports" asp-action="Index">
-                                            <i class="bi bi-file-earmark-bar-graph me-2 text-primary"></i> Council Reports
+                                            <i class="bi bi-file-earmark-bar-graph me-2 brand-blue-text"></i> Council Reports
                                         </a>
                                     </li>
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <li>
                                             <a class="dropdown-item py-2" asp-controller="Settings" asp-action="Index">
-                                                <i class="bi bi-sliders me-2 text-secondary"></i> System Settings
+                                                <i class="bi bi-sliders me-2 brand-blue-text"></i> Settings
                                             </a>
                                         </li>
                                     }

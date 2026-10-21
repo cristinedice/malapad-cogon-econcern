@@ -1,0 +1,53 @@
+@model string
+@{
+    var active = Model ?? "";
+}
+
+<div class="marikina-sidebar shadow-sm">
+    <!-- Resident Section -->
+    <a asp-controller="Home" asp-action="Dashboard" class="sidebar-nav-item @(active == "Home" ? "active" : "")">
+        <i class="bi bi-house-door-fill"></i>
+        <span>Home</span>
+    </a>
+    <a asp-controller="Concern" asp-action="SelectCategory" class="sidebar-nav-item @(active == "Submit" ? "active" : "")">
+        <i class="bi bi-send-fill"></i>
+        <span>Submit Concern</span>
+    </a>
+    <a asp-controller="Concern" asp-action="MyConcerns" class="sidebar-nav-item @(active == "MyConcern" ? "active" : "")">
+        <i class="bi bi-chat-dots-fill"></i>
+        <span>My Concern</span>
+    </a>
+    <a asp-controller="Account" asp-action="Profile" class="sidebar-nav-item @(active == "Profile" ? "active" : "")">
+        <i class="bi bi-person-fill"></i>
+        <span>Profile</span>
+    </a>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+    {
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section-header">
+            <span class="sidebar-section-title">
+                <i class="bi bi-shield-lock-fill me-1"></i> Official Portal
+            </span>
+        </div>
+        <a asp-controller="Admin" asp-action="Index" class="sidebar-nav-item @(active == "AdminDashboard" ? "active" : "")">
+            <i class="bi bi-speedometer2"></i>
+            <span>Admin Dashboard</span>
+        </a>
+        <a asp-controller="Admin" asp-action="Concerns" class="sidebar-nav-item @(active == "AllConcerns" ? "active" : "")">
+            <i class="bi bi-card-checklist"></i>
+            <span>All Concerns</span>
+        </a>
+        <a asp-controller="Reports" asp-action="Index" class="sidebar-nav-item @(active == "CouncilReports" ? "active" : "")">
+            <i class="bi bi-file-earmark-bar-graph"></i>
+            <span>Council Reports</span>
+        </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Settings" asp-action="Index" class="sidebar-nav-item @(active == "Settings" ? "active" : "")">
+                <i class="bi bi-sliders"></i>
+                <span>Settings</span>
+            </a>
+        }
+    }
+</div>
