@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: malapad-cogon-econcern
+    runtime: docker
+    region: singapore
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
