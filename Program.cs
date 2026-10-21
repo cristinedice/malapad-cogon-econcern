@@ -7,6 +7,13 @@ using MalapadCogonEConcern.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Dynamically bind to Render's injected PORT environment variable or default
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
 // 1. Database Connection
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? "Data Source=econcern.db";
